@@ -1,3 +1,6 @@
+CREATE DATABASE moviedb;
+use moviedb
+
 create table movies(
 id varchar(45) default '',
 title varchar(100) default '',
