@@ -1,5 +1,5 @@
 CREATE DATABASE moviedb;
-use moviedb
+use moviedb;
 
 create table movies(
 id varchar(45) default '',
