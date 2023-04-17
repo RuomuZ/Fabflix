@@ -1,6 +1,3 @@
-CREATE DATABASE moviedb;
-use moviedb;
-
 create table movies(
 id varchar(45) default '',
 title varchar(100) default '',
@@ -24,6 +21,13 @@ foreign key (starId) references stars(id),
 foreign key (movieId) references movies(id)
 );
 
+create table creditcards(
+id varchar(20) default '',
+firstName varchar(50) default '',
+lastName varchar (50) default '',
+expiration date,
+primary key (id)
+);
 
 create table genres(
 id int not null auto_increment,
