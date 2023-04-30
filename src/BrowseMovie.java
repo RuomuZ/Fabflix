@@ -59,7 +59,9 @@ public class BrowseMovie extends HttpServlet {
         if (para != null) {
             url += "?" + para.toString();
         }
+        url = url.replace("api/", "");
         session.setAttribute("previousURL", url);
+
         try (Connection conn = dataSource.getConnection()) {
             String query = "select u.title, u.year, u.director, v.rating, (select group_concat(distinct v.name order by v.name separator \",\") from (select x.name from stars as x, stars_in_movies as y where y.movieId = u.id and y.starId = x.id order by x.name limit 3) as v) as movie_stars, (select group_concat(distinct v.name order by v.name separator \",\") from (select x.name from genres as x, genres_in_movies as y where y.movieId = u.id and y.genreId = x.id order by x.name limit 3) as v) as movie_genres from movies as u, ratings as v ";
             int flag = 0;

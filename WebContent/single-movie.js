@@ -47,25 +47,30 @@ function handleResult(resultData) {
     // Populate the star table
     // Find the empty table body by id "movie_table_body"
     let starTableBodyElement = jQuery("#star_table_body");
-
+    let backElement = jQuery("#back");
+    let backHTML = '<a href=' + resultData[0]["back"] + '>'
+        + "Go Back" +
+        '</a>';
+    console.log("back appeneded");
+    backElement.append(backHTML);
     // Concatenate the html tags with resultData jsonObject to create table rows
-    for (let i = 0; i < resultData.length; i++) {
-        let rowHTML = "";
-        rowHTML += "<tr>";
-        const myArray = resultData[i]["stars"].split(",");
-        rowHTML += "<th>";
-        for (let i = 0; i < myArray.length; i++)
-        {
-            rowHTML += '<a href="single-star.html?name=' + myArray[i] + '">'
-                + myArray[i] +     // display star_name for the link text
-                '</a>' + "||";
-        }
-        rowHTML += "</th>";
-        rowHTML += "</tr>";
+
+    let rowHTML = "";
+    rowHTML += "<tr>";
+    const myArray = resultData[1]["stars"].split(",");
+    rowHTML += "<th>";
+    for (let i = 0; i < myArray.length; i++)
+    {
+        rowHTML += '<a href="single-star.html?name=' + myArray[i] + '">'
+            + myArray[i] +     // display star_name for the link text
+            '</a>' + "||";
+    }
+    rowHTML += "</th>";
+    rowHTML += "</tr>";
 
         // Append the row created to the table body, which will refresh the page
-        starTableBodyElement.append(rowHTML);
-    }
+    starTableBodyElement.append(rowHTML);
+
 }
 
 /**
