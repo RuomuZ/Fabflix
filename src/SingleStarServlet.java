@@ -8,6 +8,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -44,7 +46,7 @@ public class SingleStarServlet extends HttpServlet {
 
         // The log message can be found in localhost log
         request.getServletContext().log("getting id: " + id);
-
+        HttpSession session = request.getSession();
         // Output stream to STDOUT
         PrintWriter out = response.getWriter();
 
@@ -66,7 +68,11 @@ public class SingleStarServlet extends HttpServlet {
             ResultSet rs = statement.executeQuery();
 
             JsonArray jsonArray = new JsonArray();
-
+            String back_url = (String) session.getAttribute("previousURL");
+            JsonObject jsonO = new JsonObject();
+            jsonO.addProperty("back",back_url);
+            System.out.println(jsonO);
+            jsonArray.add(jsonO);
             // Iterate through each row of rs
             while (rs.next()) {
                 String starName = rs.getString("name");
@@ -81,9 +87,8 @@ public class SingleStarServlet extends HttpServlet {
                 jsonObject.addProperty("star_name", starName);
                 jsonObject.addProperty("star_dob", starDob);
                 jsonObject.addProperty("movie_title", allMovies);
-
-
                 jsonArray.add(jsonObject);
+                System.out.println(jsonObject);
             }
             rs.close();
             statement.close();

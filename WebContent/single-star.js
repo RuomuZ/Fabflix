@@ -44,41 +44,32 @@ function handleResult(resultData) {
     // find the empty h3 body by id "star_info"
     let starInfoElement = jQuery("#star_info");
 
-    // append two html <p> created to the h3 body, which will refresh the page
-    starInfoElement.append("<p>Star Name: " + resultData[0]["star_name"] + "</p>" + "<p>Date Of Birth: " + resultData[0]["star_dob"] + "</p>");
-    /*
-    if (resultData[0]["star_dob"].localeCompare("null") == 0)
-    {
-        starInfoElement.append("<p>Date Of Birth: " + "N/A" + "</p>");
-    }
-    else
-    {
-        starInfoElement.append("<p>Date Of Birth: " + resultData[0]["star_dob"] + "</p>");
-    }
-    */
+    starInfoElement.append("<p>Star Name: " + resultData[1]["star_name"] + "</p>" + "<p>Date Of Birth: " + resultData[0]["star_dob"] + "</p>");
     console.log("handleResult: populating movie table from resultData");
 
-    // Populate the star table
-    // Find the empty table body by id "movie_table_body"
+
     let movieTableBodyElement = jQuery("#movie_table_body");
-    console.log("here")
-    for (let i = 0; i < resultData.length; i++) {
-        let rowHTML = "";
-        rowHTML += "<tr>";
-        const myArray = resultData[i]["movie_title"].split(",");
-        rowHTML += "<th>";
-        console.log("here");
-        for (let i = 0; i < myArray.length; i++) {
-            rowHTML += '<a href="single-movie.html?title=' + myArray[i] + '">'
-                + myArray[i] +     // display star_name for the link text
-                '</a>' + "||";
-        }
-        rowHTML += "</th>";
-        rowHTML += "</tr>";
+    let backElement = jQuery("#back");
+    let backHTML = '<a href=' + resultData[0]["back"] + '>'
+        + "Go Back" +
+        '</a>';
+    backElement.append(backHTML);
+    let rowHTML = "";
+    rowHTML += "<tr>";
+    const myArray = resultData[1]["movie_title"].split(",");
+    rowHTML += "<th>";
+    console.log("here");
+    for (let i = 0; i < myArray.length; i++) {
+        rowHTML += '<a href="single-movie.html?title=' + myArray[i] + '">'
+            + myArray[i] +     // display star_name for the link text
+            '</a>' + "||";
+    }
+    rowHTML += "</th>";
+    rowHTML += "</tr>";
 
         // Append the row created to the table body, which will refresh the page
-        movieTableBodyElement.append(rowHTML);
-    }
+    movieTableBodyElement.append(rowHTML);
+
 }
 
 /**
