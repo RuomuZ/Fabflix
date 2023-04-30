@@ -54,12 +54,29 @@
         <input name="star" placeholder="" type="text">
     </label>
     <br>
+    <label>
+        <input name="load_size" placeholder="0" type="hidden" value=10>
+    </label>
+    <label>
+        <input name="sorted" placeholder="0" type="hidden" value="tara">
+    </label>
+    <label>
+        <input name="offset" placeholder="0" type="hidden" value=0>
+    </label>
+    <br>
+    <input type="submit" value="Search">
+</form>
+<form>
     <label for="sorted">Sorted Order:</label>
     <select name="sorted" id="sorted">
         <option value="tara">Title Ascending and rating Ascending</option>
         <option value="tard">Title Ascending and rating Descending</option>
         <option value="tdra">Title Descending and rating Ascending</option>
         <option value="tdrd">Title Descending and rating Descending</option>
+        <option value="rata">Rating Ascending and title Ascending</option>
+        <option value="ratd">Rating Ascending and title Descending</option>
+        <option value="rdta">Rating Descending and title Ascending</option>
+        <option value="rdtd">Rating Descending and title Descending</option>
     </select>
     <label for="load_size">Load Size:</label>
     <select name="load_size" id="load_size">
@@ -68,11 +85,7 @@
         <option value="50">50</option>
         <option value="100">100</option>
     </select>
-    <label>
-        <input name="offset" placeholder="0" type="hidden" value=0>
-    </label>
-    <br>
-    <input type="submit" value="Search">
+    <input type="button" name="button" value="Update" onClick="update(this.form)">
 </form>
 <h2>By Genres</h2>
 <p id = "genreList">

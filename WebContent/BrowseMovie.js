@@ -18,6 +18,16 @@ function getParameterByName(target) {
     // Return the decoded parameter value
     return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
+
+function update(form){
+    let l = form.load_size.value;
+    let s = form.sorted.value;
+    let cl = getParameterByName("load_size")
+    let cs = getParameterByName("sorted")
+    let new_url = current.replace("sorted="+cs,"sorted="+s);
+    new_url = new_url.replace("load_size="+cl, "load_size="+l);
+    window.location.replace(new_url);
+}
 function handleStarResult(resultData) {
     console.log("handleStarResult: populating star table from resultData");
 
@@ -27,7 +37,7 @@ function handleStarResult(resultData) {
     console.log(resultData.length);
     console.log(load);
     // Iterate through resultData, no more than 10 entriess
-    for (let i = 1; i < Math.min(load, resultData.length); i++) {
+    for (let i = 1; i < Math.min(load + 1, resultData.length); i++) {
 
         // Concatenate the html tags with resultData jsonObject
         console.log(i)
@@ -43,7 +53,7 @@ function handleStarResult(resultData) {
         rowHTML += "<th>";
         for (let i = 0; i < myArray1.length; i++)
         {
-            rowHTML += '<a href="BrowseMovie.html?sorted=tara&load_size=25&offset=0&genre=' + myArray1[i] + '">'
+            rowHTML += '<a href="BrowseMovie.html?sorted=tara&load_size=10&offset=0&genre=' + myArray1[i] + '">'
                 + myArray1[i] +
                 '</a>' + "||";
         }
@@ -119,13 +129,13 @@ let charList = jQuery("#charList");
 let genresAppend = "";
 for (let i = 0; i < genre_set.length; ++i)
 {
-    genresAppend += '<a href="BrowseMovie.html?sorted=tara&load_size=25&offset=0&genre=' + genre_set[i] + '">' + genre_set[i] + '</a>'+ "   ";
+    genresAppend += '<a href="BrowseMovie.html?sorted=tara&load_size=10&offset=0&genre=' + genre_set[i] + '">' + genre_set[i] + '</a>'+ "   ";
 }
 genresList.append(genresAppend);
 let charAppend = "";
 for (let i = 0; i < char_set.length; ++i)
 {
-    charAppend += '<a href="BrowseMovie.html?sorted=tara&load_size=25&offset=0&char=' + char_set[i] + '">' + char_set[i] + '</a>'+ "   ";
+    charAppend += '<a href="BrowseMovie.html?sorted=tara&load_size=10&offset=0&char=' + char_set[i] + '">' + char_set[i] + '</a>'+ "   ";
 }
 charList.append(charAppend);
 /**

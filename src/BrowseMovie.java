@@ -53,6 +53,7 @@ public class BrowseMovie extends HttpServlet {
         String cha = request.getParameter("char");
         String load = request.getParameter("load_size");
         String offset = request.getParameter("offset");
+        String order = request.getParameter("sorted");
 
         try (Connection conn = dataSource.getConnection()) {
             String query = "select u.title, u.year, u.director, v.rating, (select group_concat(distinct v.name order by v.name separator \",\") from (select x.name from stars as x, stars_in_movies as y where y.movieId = u.id and y.starId = x.id order by x.name limit 3) as v) as movie_stars, (select group_concat(distinct v.name order by v.name separator \",\") from (select x.name from genres as x, genres_in_movies as y where y.movieId = u.id and y.genreId = x.id order by x.name limit 3) as v) as movie_genres from movies as u, ratings as v ";
@@ -129,7 +130,32 @@ public class BrowseMovie extends HttpServlet {
             }
             String total = (String) session.getAttribute(title+year+director+star+genre+cha);
             System.out.println("get total " + total);
-            query += "u.id = v.MovieId limit " + load + " offset " + offset;
+            query += "u.id = v.MovieId ";
+            if (order.equals("tara"))
+            {
+                query += " order by title ASC,rating ASC ";
+            }
+            else if (order.equals("tard")){
+                query += " order by title ASC,rating DESC ";
+            }
+            else if(order.equals("tdra")){
+                query += " order by title DESC,rating ASC ";
+            }
+            else if (order.equals("tdrd")){
+                query += " order by title DESC,rating DESC ";
+
+            }else if (order.equals("rata")){
+                query += " order by rating ASC,title ASC ";
+
+            }else if (order.equals("ratd")){
+                query += " order by rating ASC,title DESC ";
+
+            }else if (order.equals("rdta")){
+                query += " order by rating DESC,title ASC ";
+            }else if (order.equals("rdtd")){
+                query += ", order by rating DESC,title DESC ";
+            }
+            query += " limit " + load + " offset " + offset + ";";
             System.out.println(query);
             PreparedStatement statement = conn.prepareStatement(query);
             ResultSet rs = statement.executeQuery();

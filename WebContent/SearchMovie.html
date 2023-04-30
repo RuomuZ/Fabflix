@@ -31,20 +31,12 @@
     <input name="star" placeholder="" type="text">
   </label>
   <br>
-  <label for="sorted">Sorted Order:</label>
-  <select name="sorted" id="sorted">
-    <option value="tara">Title Ascending and rating Ascending</option>
-    <option value="tard">Title Ascending and rating Descending</option>
-    <option value="tdra">Title Descending and rating Ascending</option>
-    <option value="tdrd">Title Descending and rating Descending</option>
-  </select>
-  <label for="load_size">Load Size:</label>
-  <select name="load_size" id="load_size">
-    <option value="10">10</option>
-    <option value="25">25</option>
-    <option value="50">50</option>
-    <option value="100">100</option>
-  </select>
+  <label>
+    <input name="load_size" placeholder="0" type="hidden" value=10>
+  </label>
+  <label>
+    <input name="sorted" placeholder="0" type="hidden" value="tara">
+  </label>
   <label>
     <input name="offset" placeholder="0" type="hidden" value=0>
   </label>
