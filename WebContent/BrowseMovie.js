@@ -1,28 +1,38 @@
+let current = window.location.href;
+let index = current.indexOf("BrowseMovie");
+let t = current.slice(index,current.length);
+to = "api/" + t;
+let load = parseInt(getParameterByName("load_size"))
+function getParameterByName(target) {
+    // Get request URL
+    let url = window.location.href;
+    // Encode target parameter name to url encoding
+    target = target.replace(/[\[\]]/g, "\\$&");
+
+    // Ues regular expression to find matched parameter value
+    let regex = new RegExp("[?&]" + target + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+
+    // Return the decoded parameter value
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
 function handleStarResult(resultData) {
     console.log("handleStarResult: populating star table from resultData");
 
     // Populate the star table
     // Find the empty table body by id "star_table_body"
     let movieTableBodyElement = jQuery("#movie_table_body");
-    console.log("here");
     console.log(resultData.length);
+    console.log(load);
     // Iterate through resultData, no more than 10 entriess
-    for (let i = 0; i < Math.min(20, resultData.length); i++) {
+    for (let i = 1; i < Math.min(load, resultData.length); i++) {
 
         // Concatenate the html tags with resultData jsonObject
-        console.log("ite");
+        console.log(i)
         let rowHTML = "";
         rowHTML += "<tr>";
-        /*
-        rowHTML +=
-            "<th>" +
-            // Add a link to single-star.html with id passed with GET url parameter
-            '<a href="single-star.html?id=' + resultData[i]['star_id'] + '">'
-            + resultData[i]["star_name"] +     // display star_name for the link text
-            '</a>' +
-            "</th>";
-        rowHTML += "<th>" + resultData[i]["star_dob"] + "</th>";
-        */
         rowHTML += "<th>" + '<a href="single-movie.html?title=' + resultData[i]["movie_title"] + '">'
             + resultData[i]["movie_title"] +     // display star_name for the link text
             '</a>' + "</th>";
@@ -52,8 +62,49 @@ function handleStarResult(resultData) {
 
         // Append the row created to the table body, which will refresh the page
         movieTableBodyElement.append(rowHTML);
-        console.log("done");
+
+
     }
+    let PageElement = jQuery("#page");
+    let num_rec = parseInt(resultData[0]["total"]);
+    let num_page = Math.ceil(num_rec / load)
+    let htap = ""
+    let offset = parseInt(getParameterByName("offset"))
+    let current_page = (offset / load) + 1
+    if (current_page == 1)
+    {
+        htap += "<a href=\"#\">&laquo;</a>";
+    }
+    else{
+        let o = offset - load
+        let p = t.replace("offset=" + offset.toString(), "offset=" + o.toString())
+        htap += "<a href=" + p + ">&laquo;</a>";
+    }
+
+    for (let i = 1; i <= num_page; i++)
+    {
+        let o = offset + (i - current_page) * load
+        let p = t.replace("offset=" + offset.toString(), "offset=" + o.toString())
+
+        if (i == current_page) {
+            htap += '<a class = "active" href=' + p + '>'
+                +i+'</a>';
+        }
+        else{
+            htap += '<a href=' + p + '>'
+                +i+'</a>';
+        }
+    }
+    if (current_page == num_page)
+    {
+        htap += "<a href=\"#\">&raquo;</a>";
+    }
+    else{
+        let o = offset + load
+        let p = t.replace("offset=" + offset.toString(), "offset=" + o.toString())
+        htap += "<a href=" + p + ">&raquo;</a>";
+    }
+    PageElement.append(htap)
 }
 
 var genre_set = ["Action", "Adult","Adventure","Biography","Comedy","Crime","Documentary"
@@ -80,10 +131,7 @@ charList.append(charAppend);
 /**
  * Once this .js is loaded, following scripts will be executed by the browser
  */
-let current = window.location.href;
-let index = current.indexOf("BrowseMovie");
-let to = current.slice(index,current.length);
-to = "api/" + to;
+
 console.log(to);
 // Makes the HTTP GET request and registers on success callback function handleStarResult
 jQuery.ajax({

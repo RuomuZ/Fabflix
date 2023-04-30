@@ -8,6 +8,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -41,6 +43,7 @@ public class BrowseMovie extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
+        HttpSession session = request.getSession();
         String title = request.getParameter("title");
         String year = request.getParameter("year");
         String director = request.getParameter("director");
@@ -48,6 +51,9 @@ public class BrowseMovie extends HttpServlet {
         String genre = request.getParameter("genre");
         System.out.print(year);
         String cha = request.getParameter("char");
+        String load = request.getParameter("load_size");
+        String offset = request.getParameter("offset");
+
         try (Connection conn = dataSource.getConnection()) {
             String query = "select u.title, u.year, u.director, v.rating, (select group_concat(distinct v.name order by v.name separator \",\") from (select x.name from stars as x, stars_in_movies as y where y.movieId = u.id and y.starId = x.id order by x.name limit 3) as v) as movie_stars, (select group_concat(distinct v.name order by v.name separator \",\") from (select x.name from genres as x, genres_in_movies as y where y.movieId = u.id and y.genreId = x.id order by x.name limit 3) as v) as movie_genres from movies as u, ratings as v ";
             int flag = 0;
@@ -103,11 +109,34 @@ public class BrowseMovie extends HttpServlet {
                 }
             }
             if (flag == 1) {query += " and ";}
-            query += "u.id = v.MovieId;";
+            if (session.getAttribute(title+year+director+star+genre+cha) == null)
+
+            {
+                System.out.println("attribute not exist");
+                String query2 = query +"u.id = v.MovieId;";
+                query2 = query2.replace("u.title, u.year, u.director, v.rating, (select group_concat(distinct v.name order by v.name separator \",\") from (select x.name from stars as x, stars_in_movies as y where y.movieId = u.id and y.starId = x.id order by x.name limit 3) as v) as movie_stars, (select group_concat(distinct v.name order by v.name separator \",\") from (select x.name from genres as x, genres_in_movies as y where y.movieId = u.id and y.genreId = x.id order by x.name limit 3) as v) as movie_genres ", "count(*) as total ");
+                System.out.println("query 2 = " + query2);
+                PreparedStatement statement = conn.prepareStatement(query2);
+                ResultSet rs = statement.executeQuery();
+                String t = "";
+                if (rs.next()){
+                    t = rs.getString("total");
+                }
+                System.out.println("set total to " + t);
+                session.setAttribute(title+year+director+star+genre+cha, t);
+                statement.close();
+                rs.close();
+            }
+            String total = (String) session.getAttribute(title+year+director+star+genre+cha);
+            System.out.println("get total " + total);
+            query += "u.id = v.MovieId limit " + load + " offset " + offset;
             System.out.println(query);
             PreparedStatement statement = conn.prepareStatement(query);
             ResultSet rs = statement.executeQuery();
             JsonArray jsonArray = new JsonArray();
+            JsonObject jsonNum = new JsonObject();
+            jsonNum.addProperty("total",total);
+            jsonArray.add(jsonNum);
             while (rs.next()) {
                 String movie_title = rs.getString("title");
                 String movie_year = rs.getString("year");
