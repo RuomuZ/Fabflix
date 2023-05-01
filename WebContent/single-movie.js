@@ -18,7 +18,21 @@ function getParameterByName(target) {
  * Handles the data returned by the API, read the jsonObject and populate data into html elements
  * @param resultData jsonObject
  */
+function handleAdd(movie_title) {
+    console.log("submit cart form");
 
+    $.ajax("api/addItem?item=" + movie_title, {
+        method: "GET",
+        success: resultDataString => {
+            let resultDataJson = JSON.parse(resultDataString);
+            handleCartArray(resultDataJson["previousItems"]);
+        }
+    });
+    // clear input form
+    function handleCartArray(rs)
+    {
+    }
+}
 function handleResult(resultData) {
 
     console.log("handleResult: populating star info from resultData");
@@ -26,46 +40,49 @@ function handleResult(resultData) {
     // populate the star info h3
     // find the empty h3 body by id "star_info"
     let movieInfoElement = jQuery("#movie_info");
+    let movieInfo = "<p>Movie Title: " + resultData[1]["title"] + "</p>" + "<p>Year: " + resultData[1]["year"]
+        + "</p>" + "<p>Director: " + resultData[1]["director"] + "</p>"
+         + "<p>Movie Rating: " + resultData[1]["rating"] + "</p>" +"<button onClick='handleAdd(\"" + resultData[1]["title"] + "\")'>ADD</button>";
+    const myArray1 = resultData[1]["genres"].split(",");
+    movieInfo += "<p>Genres: ";
+    for (let i = 0; i < myArray1.length;++i)
+    {
+       movieInfo+='<a href="BrowseMovie.html?sorted=tara&load_size=10&offset=0&genre=' + myArray1[i] + '">' + myArray1[i] + '</a>'+ "   ";
+    }
+    movieInfo += "</p>"
 
     // append two html <p> created to the h3 body, which will refresh the page
-    movieInfoElement.append("<p>Movie Title: " + resultData[0]["title"] + "</p>" + "<p>Year: " + resultData[0]["year"]
-        + "</p>" + "<p>Director: " + resultData[0]["director"] + "</p>"
-        + "<p>Genres: " + resultData[0]["genres"] + "</p>"
-    );
-    /*
-    if (resultData[0]["star_dob"].localeCompare("null") == 0)
-    {
-        starInfoElement.append("<p>Date Of Birth: " + "N/A" + "</p>");
-    }
-    else
-    {
-        starInfoElement.append("<p>Date Of Birth: " + resultData[0]["star_dob"] + "</p>");
-    }
-    */
+    movieInfoElement.append(movieInfo);
+
     console.log("handleResult: populating star table from resultData");
 
     // Populate the star table
     // Find the empty table body by id "movie_table_body"
     let starTableBodyElement = jQuery("#star_table_body");
-
+    let backElement = jQuery("#back");
+    let backHTML = '<a href=' + resultData[0]["back"] + '>'
+        + "Go Back" +
+        '</a>';
+    console.log("back appeneded");
+    backElement.append(backHTML);
     // Concatenate the html tags with resultData jsonObject to create table rows
-    for (let i = 0; i < resultData.length; i++) {
-        let rowHTML = "";
-        rowHTML += "<tr>";
-        const myArray = resultData[i]["stars"].split(",");
-        rowHTML += "<th>";
-        for (let i = 0; i < myArray.length; i++)
-        {
-            rowHTML += '<a href="single-star.html?name=' + myArray[i] + '">'
-                + myArray[i] +     // display star_name for the link text
-                '</a>' + "||";
-        }
-        rowHTML += "</th>";
-        rowHTML += "</tr>";
+
+    let rowHTML = "";
+    rowHTML += "<tr>";
+    const myArray = resultData[1]["stars"].split(",");
+    rowHTML += "<th>";
+    for (let i = 0; i < myArray.length; i++)
+    {
+        rowHTML += '<a href="single-star.html?name=' + myArray[i] + '">'
+            + myArray[i] +     // display star_name for the link text
+            '</a>' + "||";
+    }
+    rowHTML += "</th>";
+    rowHTML += "</tr>";
 
         // Append the row created to the table body, which will refresh the page
-        starTableBodyElement.append(rowHTML);
-    }
+    starTableBodyElement.append(rowHTML);
+
 }
 
 /**

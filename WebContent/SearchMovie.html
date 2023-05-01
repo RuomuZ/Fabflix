@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <title>Search Movie</title>
+</head>
+<body>
+<h2>Search Movies</h2>
+<form id="search_form" method="get" action=BrowseMovie.html>
+  <label><b>Title</b></label>
+  <label>
+    <input name="title" placeholder="" type="text">
+  </label>
+  <label><b>Year</b></label>
+  <label>
+    <input name="year" placeholder="" type="text">
+  </label>
+  <br>
+  <label><b>Director</b></label>
+  <label>
+    <input name="director" placeholder="" type="text">
+  </label>
+  <label><b>Star's Name</b></label>
+  <label>
+    <input name="star" placeholder="" type="text">
+  </label>
+  <br>
+  <label>
+    <input name="load_size" placeholder="0" type="hidden" value=10>
+  </label>
+  <label>
+    <input name="sorted" placeholder="0" type="hidden" value="tara">
+  </label>
+  <label>
+    <input name="offset" placeholder="0" type="hidden" value=0>
+  </label>
+  <br>
+  <input type="submit" value="Search">
+</form>
+<h2>By Genres</h2>
+<p id = "genreList">
+<h2>By Char</h2>
+</p>
+<p id = "charList">
+</p>
+<p><a href="Cart.html"> Checkout
+</a></p>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+<script src="SearchMovie.js"></script>
+</body>
+</html>

@@ -1,10 +1,3 @@
-<!-- This example is following frontend and backend separation.
-
-    This .html performs two steps:
-    1. Create a html template skeleton, with all the elements defined (some left empty) and named with ids.
-    2. Load single-star.js to populate the data into empty elements.
-    -->
-
 <!doctype html>
 <html lang="en">
 <head>
@@ -16,27 +9,13 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <title>Single Star</title>
+    <title>Cart</title>
 </head>
 <body>
-<h1>Single Star Page</h1>
-
-<!-- H3 body is left empty here, will be populated with the data retrieved with single-star.js -->
-<!-- single-star.js will find this html element by it's id "star_info" -->
-<h3 id="star_info"></h3>
-<table id=movie_table class="table table-striped">
-    <thead>
-    <tr>
-        <th>Movie Title</th>
-    </tr>
-    </thead>
-
-    <!-- Table body is left empty here, will be populated with the data retrieved with single-star.js -->
-    <!-- single-star.js will find this html element by it's id "movie_table_body" -->
-    <tbody id=movie_table_body></tbody>
-</table>
-<p><a href="Cart.html"> Checkout
-</a></p>
+<h1>Cart</h1>
+<div id="item_list"></div>
+<h2 id = "total"></h2>
+<h2><a href="Pay.html">Proceed to Pay</a></h2>
 <p id = "back"></p>
 <p>
     <a href="SearchMovie.html">Back to Main Page></a>
@@ -50,7 +29,7 @@
 <!-- The path is relative to single-star.html, since these two files are in the same directory -->
 <!-- Note the url does not contain a "/" in the beginning, which means the url is relative to current path
      otherwise the url is relative to the root path-->
-<script src="single-star.js"></script>
+<script src="Cart.js"></script>
 </body>
 
 

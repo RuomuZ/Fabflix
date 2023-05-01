@@ -8,6 +8,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -44,7 +46,7 @@ public class SingleMovieServlet extends HttpServlet {
         System.out.println(title);
         // The log message can be found in localhost log
         request.getServletContext().log("getting title: " + title);
-
+        HttpSession session = request.getSession();
         // Output stream to STDOUT
         PrintWriter out = response.getWriter();
 
@@ -66,7 +68,11 @@ public class SingleMovieServlet extends HttpServlet {
             // Perform the query
             ResultSet rs = statement.executeQuery();
             JsonArray jsonArray = new JsonArray();
-
+            String back_url = (String) session.getAttribute("previousURL");
+            JsonObject jsonO = new JsonObject();
+            jsonO.addProperty("back",back_url);
+            System.out.println(jsonO);
+            jsonArray.add(jsonO);
 
             // Iterate through each row of rs
             while (rs.next()) {

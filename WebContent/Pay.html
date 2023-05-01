@@ -1,0 +1,48 @@
+<!-- This page will be redirected from any url if you are not logged in -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Make a Payment</title>
+</head>
+<body>
+<h2>Make a Payment</h2>
+<!-- Set the method to POST to avoid showing the username/password in the URL
+     The default action is disabled to allow your own implementation. -->
+<form id="cc_form" method="post" action="#">
+    <label><b>First Name</b></label>
+    <label>
+        <input name="first_name" placeholder="Enter First Name" type="text">
+    </label>
+    <br>
+    <label><b>Last Name</b></label>
+    <label>
+        <input name="last_name" placeholder="Enter Last Name" type="text">
+    </label>
+    <br>
+    <label><b>Credit Card Number</b></label>
+    <label>
+        <input name="cc" placeholder="Enter Credit Card Number" type="text">
+    </label>
+    <br>
+    <label><b>Credit Card Expiration Date</b></label>
+    <label>
+        <input name="exp" placeholder="Credit Card Expiration Date" type="text">
+    </label>
+    <br>
+    <input type="submit" value="Place the Order">
+</form>
+<p id="pay_error_message"></p>
+<p id = "back"></p>
+<p>
+    <a href="SearchMovie.html">Back to Main Page></a>
+</p>
+
+
+<!-- include jQuery-->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<!-- include our own JS file -->
+<script src="Pay.js"></script>
+
+</body>
+</html>
