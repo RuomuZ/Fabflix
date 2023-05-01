@@ -34,15 +34,12 @@ public class PaymentServlet extends HttpServlet {
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String first_name = request.getParameter("first_name");
-        String last_name = request.getParameter("last_name");
-        String cc = request.getParameter("cc");
-        String exp = request.getParameter("exp");
-        /* This example only allows username/password to be test/test
-        /  in the real project, you should talk to the database to verify username/password
-        */
-        JsonObject responseJsonObject = new JsonObject();
         try (Connection conn = dataSource.getConnection()) {
+            String first_name = request.getParameter("first_name");
+            String last_name = request.getParameter("last_name");
+            String cc = request.getParameter("cc");
+            String exp = request.getParameter("exp");
+            JsonObject responseJsonObject = new JsonObject();
             String query = "select * from creditcards where id = ? and firstName = ? and lastName = ? and expiration=?";
             PreparedStatement statement = conn.prepareStatement(query);
             statement.setString(1, cc);
@@ -51,6 +48,7 @@ public class PaymentServlet extends HttpServlet {
             statement.setString(4, exp);
             ResultSet rs = statement.executeQuery();
             if (rs.next()) {
+                request.getSession().setAttribute("previousOrder",request.getSession().getAttribute("previousItems"));
                 request.getSession().setAttribute("previousItems",new ArrayList<String>());
                 responseJsonObject.addProperty("status", "success");
                 responseJsonObject.addProperty("message", "success payed");
@@ -58,13 +56,16 @@ public class PaymentServlet extends HttpServlet {
 
             } else {
                 responseJsonObject.addProperty("status", "fail");
+                responseJsonObject.addProperty("message", "fail payed");
                 request.getServletContext().log("Payment failed");
             }
             response.getWriter().write(responseJsonObject.toString());
         } catch (Exception e) {
             JsonObject jsonObject = new JsonObject();
+            jsonObject.addProperty("message", "fail!");
             jsonObject.addProperty("errorMessage", e.getMessage());
             System.out.println(jsonObject.toString());
+            response.getWriter().write(jsonObject.toString());
             response.setStatus(500);
         }
     }

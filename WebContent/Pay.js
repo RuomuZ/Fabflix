@@ -15,12 +15,9 @@ function handleLoginResult(resultDataString) {
     if (resultDataJson["status"] === "success") {
         window.location.replace("Success.html");
     } else {
-        // If login fails, the web page will display
-        // error messages on <div> with id "login_error_message"
-
         console.log("show error message");
         console.log(resultDataJson["message"]);
-        $("#pay_error_message").text("Fail!");
+        $("#pay_error_message").text("Fail");
     }
 }
 

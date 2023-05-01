@@ -10,12 +10,12 @@ let charList = jQuery("#charList");
 let genresAppend = "";
 for (let i = 0; i < genre_set.length; ++i)
 {
-    genresAppend += '<a href="BrowseMovie.html?sorted=tara&load_size=10&offset=0&genre=' + genre_set[i] + '">' + genre_set[i] + '</a>'+ "   ";
+    genresAppend += '<a href="BrowseMovie.html?sorted=tdrd&load_size=10&offset=0&genre=' + genre_set[i] + '">' + genre_set[i] + '</a>'+ "   ";
 }
 genresList.append(genresAppend);
 let charAppend = "";
 for (let i = 0; i < char_set.length; ++i)
 {
-    charAppend += '<a href="BrowseMovie.html?sorted=tara&load_size=10&offset=0&char=' + char_set[i] + '">' + char_set[i] + '</a>'+ "   ";
+    charAppend += '<a href="BrowseMovie.html?sorted=tdrd&load_size=10&offset=0&char=' + char_set[i] + '">' + char_set[i] + '</a>'+ "   ";
 }
 charList.append(charAppend);
