@@ -18,7 +18,21 @@ function getParameterByName(target) {
  * Handles the data returned by the API, read the jsonObject and populate data into html elements
  * @param resultData jsonObject
  */
+function handleAdd(movie_title) {
+    console.log("submit cart form");
 
+    $.ajax("api/addItem?item=" + movie_title, {
+        method: "GET",
+        success: resultDataString => {
+            let resultDataJson = JSON.parse(resultDataString);
+            handleCartArray(resultDataJson["previousItems"]);
+        }
+    });
+    // clear input form
+    function handleCartArray(rs)
+    {
+    }
+}
 function handleResult(resultData) {
 
     console.log("handleResult: populating star info from resultData");
@@ -28,7 +42,7 @@ function handleResult(resultData) {
     let movieInfoElement = jQuery("#movie_info");
     let movieInfo = "<p>Movie Title: " + resultData[1]["title"] + "</p>" + "<p>Year: " + resultData[1]["year"]
         + "</p>" + "<p>Director: " + resultData[1]["director"] + "</p>"
-         + "<p>Movie Rating: " + resultData[1]["rating"] + "</p>";
+         + "<p>Movie Rating: " + resultData[1]["rating"] + "</p>" +"<button onClick='handleAdd(\"" + resultData[1]["title"] + "\")'>ADD</button>";
     const myArray1 = resultData[1]["genres"].split(",");
     movieInfo += "<p>Genres: ";
     for (let i = 0; i < myArray1.length;++i)

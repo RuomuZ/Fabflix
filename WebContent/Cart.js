@@ -13,7 +13,13 @@ function handleCart(resultData) {
     item_list.html("");
     item_list.append(res);
     let totalElement = jQuery("#total");
-    totalElement.append(total);
+    if (resultArray.length == 0)
+    {
+        totalElement.append("Total Price: 0");
+    }
+    else{
+        totalElement.append("Total Price: " + total);
+    }
     let backElement = jQuery("#back");
     let backHTML = '<a href=' + resultData["back"] + '>'
         + "Go Back" +
