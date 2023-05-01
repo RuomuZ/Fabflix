@@ -28,6 +28,26 @@ function update(form){
     new_url = new_url.replace("load_size="+cl, "load_size="+l);
     window.location.replace(new_url);
 }
+
+function handleAdd(movie_title) {
+    console.log("submit cart form");
+
+    $.ajax("api/addItem?item=" + movie_title, {
+        method: "GET",
+        success: resultDataString => {
+            let resultDataJson = JSON.parse(resultDataString);
+            handleCartArray(resultDataJson["previousItems"]);
+        }
+    });
+    // clear input form
+
+}
+function handleCartArray(rs)
+{
+}
+
+
+
 function handleStarResult(resultData) {
     console.log("handleStarResult: populating star table from resultData");
 
@@ -68,6 +88,12 @@ function handleStarResult(resultData) {
         }
         rowHTML += "</th>";
         rowHTML += "<th>" + resultData[i]["movie_rating"] + "</th>";
+        let movie_title = resultData[i]["movie_title"];
+        rowHTML += "<th>";
+        console.log(movie_title);
+        rowHTML += "<button onClick='handleAdd(\"" + movie_title + "\")'>ADD</button>";
+
+
         rowHTML += "</tr>";
 
         // Append the row created to the table body, which will refresh the page
@@ -150,3 +176,4 @@ jQuery.ajax({
     url: to, // Setting request url, which is mapped by StarsServlet in Stars.java
     success: (resultData) => handleStarResult(resultData) // Setting callback function to handle data returned successfully by the StarsServlet
 });
+

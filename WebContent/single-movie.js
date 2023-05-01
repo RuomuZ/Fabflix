@@ -26,22 +26,20 @@ function handleResult(resultData) {
     // populate the star info h3
     // find the empty h3 body by id "star_info"
     let movieInfoElement = jQuery("#movie_info");
+    let movieInfo = "<p>Movie Title: " + resultData[1]["title"] + "</p>" + "<p>Year: " + resultData[1]["year"]
+        + "</p>" + "<p>Director: " + resultData[1]["director"] + "</p>"
+         + "<p>Movie Rating: " + resultData[1]["rating"] + "</p>";
+    const myArray1 = resultData[1]["genres"].split(",");
+    movieInfo += "<p>Genres: ";
+    for (let i = 0; i < myArray1.length;++i)
+    {
+       movieInfo+='<a href="BrowseMovie.html?sorted=tara&load_size=10&offset=0&genre=' + myArray1[i] + '">' + myArray1[i] + '</a>'+ "   ";
+    }
+    movieInfo += "</p>"
 
     // append two html <p> created to the h3 body, which will refresh the page
-    movieInfoElement.append("<p>Movie Title: " + resultData[0]["title"] + "</p>" + "<p>Year: " + resultData[0]["year"]
-        + "</p>" + "<p>Director: " + resultData[0]["director"] + "</p>"
-        + "<p>Genres: " + resultData[0]["genres"] + "</p>"
-    );
-    /*
-    if (resultData[0]["star_dob"].localeCompare("null") == 0)
-    {
-        starInfoElement.append("<p>Date Of Birth: " + "N/A" + "</p>");
-    }
-    else
-    {
-        starInfoElement.append("<p>Date Of Birth: " + resultData[0]["star_dob"] + "</p>");
-    }
-    */
+    movieInfoElement.append(movieInfo);
+
     console.log("handleResult: populating star table from resultData");
 
     // Populate the star table
