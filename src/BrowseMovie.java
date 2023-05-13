@@ -19,12 +19,11 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 
 
-// Declaring a WebServlet called StarsServlet, which maps to url "/api/stars"
+
 @WebServlet(name = "BrowseMovie", urlPatterns = "/api/BrowseMovie.html")
 public class BrowseMovie extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-    // Create a dataSource which registered in web.
     private DataSource dataSource;
 
     public void init(ServletConfig config) {
@@ -85,7 +84,7 @@ public class BrowseMovie extends HttpServlet {
                 } else {
                     query += " and ";
                 }
-                query += "u.director like " + "\"%" + director + "%\"";
+                    query += "u.director like " + "\"%" + director + "%\"";
             }
             if(star != null&& !star.equals("")) {
                 if (flag == 0){
@@ -93,7 +92,7 @@ public class BrowseMovie extends HttpServlet {
                 } else {
                     query += " and ";
                 }
-                query += "k.name like " + "\"%" + star + "%\" " + " and k.id = l.starId and l.movieId = u.id";
+                    query += "k.name like " + "\"%" + star + "%\" " + " and k.id = l.starId and l.movieId = u.id";
             }
             if (genre != null)
             {

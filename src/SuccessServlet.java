@@ -10,16 +10,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 
-/**
- * This IndexServlet is declared in the web annotation below,
- * which is mapped to the URL pattern /api/index.
- */
+
 @WebServlet(name = "SuccessServlet", urlPatterns = "/api/success")
 public class SuccessServlet extends HttpServlet {
 
-    /**
-     * handles GET requests to store session information
-     */
+
 
     /*
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -52,9 +47,7 @@ public class SuccessServlet extends HttpServlet {
     }
 
 */
-    /**
-     * handles POST requests to add and show the item list information
-     */
+
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         HttpSession session = request.getSession();

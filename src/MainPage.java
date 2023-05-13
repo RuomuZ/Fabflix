@@ -16,12 +16,12 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 
 
-// Declaring a WebServlet called StarsServlet, which maps to url "/api/stars"
+
 @WebServlet(name = "MainPage", urlPatterns = "/api/topMovieList")
 public class MainPage extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-    // Create a dataSource which registered in web.
+
     private DataSource dataSource;
 
     public void init(ServletConfig config) {
@@ -32,9 +32,6 @@ public class MainPage extends HttpServlet {
         }
     }
 
-    /**
-     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-     */
 
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {

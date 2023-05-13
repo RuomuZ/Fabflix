@@ -16,9 +16,7 @@ import java.sql.Statement;
 
 @WebServlet(name = "LoginServlet", urlPatterns = "/api/login")
 public class LoginServlet extends HttpServlet {
-    /**
-     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-     */
+
     private static final long serialVersionUID = 1L;
 
     // Create a dataSource which registered in web.
@@ -33,12 +31,23 @@ public class LoginServlet extends HttpServlet {
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        JsonObject responseJsonObject = new JsonObject();
+        String gRecaptchaResponse = request.getParameter("g-recaptcha-response");
+        System.out.println("gRecaptchaResponse=" + gRecaptchaResponse);
+
+        // Verify reCAPTCHA
+        try {
+            RecaptchaVerifyUtils.verify(gRecaptchaResponse);
+        } catch (Exception e) {
+            responseJsonObject.addProperty("status", "fail");
+            responseJsonObject.addProperty("message", "reCaptcha validation error");
+            response.getWriter().write(responseJsonObject.toString());
+            return;
+        }
+
         String username = request.getParameter("username");
         String password = request.getParameter("password");
-        /* This example only allows username/password to be test/test
-        /  in the real project, you should talk to the database to verify username/password
-        */
-        JsonObject responseJsonObject = new JsonObject();
+
         try (Connection conn = dataSource.getConnection()) {
             String query = "select password from customers where email = ?";
             PreparedStatement statement = conn.prepareStatement(query);

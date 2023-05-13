@@ -169,7 +169,6 @@ charList.append(charAppend);
  */
 
 console.log(to);
-// Makes the HTTP GET request and registers on success callback function handleStarResult
 jQuery.ajax({
     dataType: "json", // Setting return data type
     method: "GET", // Setting request method
