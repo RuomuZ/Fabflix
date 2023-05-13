@@ -51,15 +51,14 @@ public class AddItemServlet extends HttpServlet {
         System.out.println(item);
         HttpSession session = request.getSession();
 
-        // get the previous items in a ArrayList
+
         ArrayList<String> previousItems = (ArrayList<String>) session.getAttribute("previousItems");
         if (previousItems == null) {
             previousItems = new ArrayList<String>();
             previousItems.add(item);
             session.setAttribute("previousItems", previousItems);
         } else {
-            // prevent corrupted states through sharing under multi-threads
-            // will only be executed by one thread at a time
+
             synchronized (previousItems) {
                 previousItems.add(item);
             }

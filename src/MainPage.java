@@ -40,7 +40,16 @@ public class MainPage extends HttpServlet {
 
         try (Connection conn = dataSource.getConnection()) {
             Statement statement = conn.createStatement();
-            String query = "with tpmovie as (select id, title, year, director, rating from movies join ratings where rating = (select max(rating) from ratings) limit 20)select u.id, u.title, u.year, u.director, u.rating, (select group_concat(distinct v.name order by v.name separator \",\") from (select x.name from stars as x, stars_in_movies as y where y.movieId = u.id and y.starId = x.id limit 3) as v) as movie_stars, (select group_concat(distinct v.name order by v.name separator \",\") from (select x.name from genres as x, genres_in_movies as y where y.movieId = u.id and y.genreId = x.id limit 3) as v) as movie_genres from tpmovie as u";
+            String query = "with tpmovie as (select id, title, year, director, rating" +
+                    " from movies join ratings where rating = (select max(rating)" +
+                    " from ratings) limit 20)select u.id, u.title, u.year, u.director" +
+                    ", u.rating, (select group_concat(distinct v.name order by v.name separator \",\")" +
+                    " from (select x.name from stars as x, stars_in_movies as y where" +
+                    " y.movieId = u.id and y.starId = x.id limit 3) as v) as movie_stars," +
+                    " (select group_concat(distinct v.name order by v.name separator \",\")" +
+                    " from (select x.name from genres as x, genres_in_movies as y " +
+                    "where y.movieId = u.id and y.genreId = x.id limit 3) as v)" +
+                    " as movie_genres from tpmovie as u";
             ResultSet rs = statement.executeQuery(query);
             JsonArray jsonArray = new JsonArray();
             while (rs.next()) {
