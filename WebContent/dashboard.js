@@ -33,6 +33,16 @@ function handleMeta(rs){
             "        <th>field</th>" +
             "        <th>type</th>" +
             "    </tr>";
+        let fields = JSON.parse(rs[i]["fields"]);
+       // console.log(fields);
+       // console.log(Object.keys(fields).length);
+        for (let k = 0; k < Object.keys(fields).length; ++k){
+            a += "<tr>";
+            console.log(fields[k]);
+            a += "<th>" + fields[k].field + "</th>";
+            a += "<th>" + fields[k].type + "</th>";
+            a += "</tr>";
+        }
         a +=  "</table>";
     }
     metaElement.append(a);

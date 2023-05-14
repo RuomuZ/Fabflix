@@ -51,12 +51,27 @@ public class metaServlet extends HttpServlet {
             ArrayList<String> tablenames = new ArrayList<String>();
             JsonArray jsonArray = new JsonArray();
             while (rs.next()) {
-                JsonObject table = new JsonObject();
-                table.addProperty("table",rs.getString("Tables_in_moviedb"));
                 tablenames.add(rs.getString("Tables_in_moviedb"));
-                jsonArray.add(table);
             }
             rs.close();
+
+            for (String i : tablenames)
+            {
+                JsonObject table = new JsonObject();
+                table.addProperty("table",i);
+                JsonArray fields = new JsonArray();
+                String query2 = "describe "+ i + ";";
+                ResultSet rs1 = statement.executeQuery(query2);
+                while (rs1.next()) {
+                    JsonObject eachField = new JsonObject();
+                    eachField.addProperty("field",rs1.getString("Field"));
+                    eachField.addProperty("type",rs1.getString("Type"));
+                    fields.add(eachField);
+                }
+                rs1.close();
+                table.addProperty("fields",fields.toString());
+                jsonArray.add(table);
+            }
             statement.close();
             request.getServletContext().log("getting " + jsonArray.size() + " results");
             out.write(jsonArray.toString());
