@@ -1,10 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <title>Search Movie</title>
 </head>
 <body>
-<h1>You login in!!!</h1>
+<p>
+    <a href="SearchMovie.html">Back to Main Page></a>
+</p>
+<h2>Add star</h2>
+<form>
+    <label><b>Star name</b></label>
+    <label>
+        <input name="star" placeholder="required" type="text" required>
+    </label>
+    <label><b>Birthday</b></label>
+    <label>
+        <input name="birthday" placeholder="optional" type="text">
+    </label>
+    <input type="button" name="button" value="Insert" onClick="insert_star(this.form)">
+</form>
+<div id="insert_star_message"></div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+<script src="dashboard.js"></script>
 </body>
 </html>

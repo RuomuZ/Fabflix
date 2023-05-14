@@ -26,7 +26,7 @@ public class UpdateSecurePassword {
         Class.forName("com.mysql.jdbc.Driver").newInstance();
         Connection connection = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
         Statement statement = connection.createStatement();
-/*
+
         // change the customers table password column from VARCHAR(20) to VARCHAR(128)
         String alterQuery = "ALTER TABLE customers MODIFY COLUMN password VARCHAR(128)";
         int alterResult = statement.executeUpdate(alterQuery);
@@ -67,8 +67,7 @@ public class UpdateSecurePassword {
             count += updateResult;
         }
         System.out.println("updating password completed, " + count + " rows affected");
-
- */
+        
         updateEmployees(statement);
 
         statement.close();
