@@ -20,3 +20,28 @@ function handleInsertStarResult(rs)
     $("#insert_star_message").text(resultDataJson["message"]);
 
 }
+
+
+function handleMeta(rs){
+    console.log("good");
+    let metaElement = jQuery("#meta");
+    let a = "";
+    for (let i = 0; i < rs.length; ++i){
+        a += "<h2>" + rs[i]["table"] + "</h2>";
+        a += "<table class=\"table table-striped\">" +
+            "    <tr>" +
+            "        <th>field</th>" +
+            "        <th>type</th>" +
+            "    </tr>";
+        a +=  "</table>";
+    }
+    metaElement.append(a);
+
+}
+
+jQuery.ajax({
+    dataType: "json", // Setting return data type
+    method: "GET", // Setting request method
+    url: "api/meta", // Setting request url, which is mapped by StarsServlet in Stars.java
+    success: (resultData) => handleMeta(resultData) // Setting callback function to handle data returned successfully by the StarsServlet
+});

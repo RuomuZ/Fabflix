@@ -54,7 +54,7 @@ public class insertStarServlet extends HttpServlet {
                 responseJsonObject.addProperty("status", "fail");
                 responseJsonObject.addProperty("message", "fail somehow");
             }
-             
+
             response.getWriter().write(responseJsonObject.toString());
         } catch (Exception e) {
             JsonObject jsonObject = new JsonObject();
