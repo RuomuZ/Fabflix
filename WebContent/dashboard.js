@@ -7,7 +7,6 @@ function insert_star(form){
     $.ajax("api/insertStar?star=" + l + "&birthday="+s, {
         method: "GET",
         success: handleInsertStarResult
-
     });
 }
 function handleInsertStarResult(rs)
@@ -21,6 +20,30 @@ function handleInsertStarResult(rs)
 
 }
 
+function add_movie(form){
+    let t = form.title.value;
+    let y = form.year.value;
+    let d = form.director.value;
+    let l = form.star.value;
+    let g = form.genre.value;
+    console.log("submit add movie form");
+    $.ajax("api/addMovie?star=" + l + "&title="+t+ "&year="+y+ "&director="+d
+        + "&genre="+g, {
+        method: "GET",
+        success: handleAddMovieResult
+
+    });
+}
+function handleAddMovieResult(rs)
+{
+    let resultDataJson = JSON.parse(rs);
+
+    console.log("handle add movie response");
+    console.log(resultDataJson);
+    console.log(resultDataJson["message"]);
+    $("#add_movie_message").text(resultDataJson["message"]);
+
+}
 
 function handleMeta(rs){
     console.log("good");

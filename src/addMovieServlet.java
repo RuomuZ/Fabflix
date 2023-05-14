@@ -12,12 +12,11 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Types;
 import java.sql.Statement;
 import org.jasypt.util.password.StrongPasswordEncryptor;
 
-@WebServlet(name = "insertStarServlet", urlPatterns = "/api/insertStar")
-public class insertStarServlet extends HttpServlet {
+@WebServlet(name = "addMovieServlet", urlPatterns = "/api/addMovie")
+public class addMovieServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
 
@@ -35,26 +34,26 @@ public class insertStarServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         JsonObject responseJsonObject = new JsonObject();
 
-
+        String title = request.getParameter("title");
+        String year = request.getParameter("year");
+        String director = request.getParameter("director");
         String star = request.getParameter("star");
-        String birthday = request.getParameter("birthday");
-        System.out.println(star + "   " + birthday);
+        String genre = request.getParameter("genre");
         try (Connection conn = dataSource.getConnection()) {
 
-
-            String query = "call insert_star(?,?);";
+            String query = "call add_movie(?,?,?,?,null,?);";
+            System.out.println(query);
             PreparedStatement statement = conn.prepareStatement(query);
-            statement.setString(1, star);
-            if (birthday.equals("")){
-                statement.setNull(2, Types.NULL);
-            }
-            else{
-                statement.setInt(2, Integer.parseInt(birthday));
-            }
+            statement.setString(1, title);
+            statement.setInt(2, Integer.parseInt(year));
+            statement.setString(3, director);
+            statement.setString(4, star);
+            statement.setString(5, genre);
+
             ResultSet rs = statement.executeQuery();
             if (rs.next()) {
                 responseJsonObject.addProperty("status", "success");
-                responseJsonObject.addProperty("message", "insert star successfully, new id is " +rs.getString("new_id"));
+                responseJsonObject.addProperty("message", rs.getString("message"));
             }
             else {
                 responseJsonObject.addProperty("status", "fail");

@@ -27,6 +27,31 @@
     <input type="button" name="button" value="Insert" onClick="insert_star(this.form)">
 </form>
 <div id="insert_star_message"></div>
+<h2>Add movie</h2>
+<form>
+    <label><b>Movie Title</b></label>
+    <label>
+        <input name="title" placeholder="required" type="text" required>
+    </label>
+    <label><b>Movie Year</b></label>
+    <label>
+        <input name="year" placeholder="required" type="text" required>
+    </label>
+    <label><b>Movie Director</b></label>
+    <label>
+        <input name="director" placeholder="required" type="text" required>
+    </label>
+    <label><b>Star name</b></label>
+    <label>
+        <input name="star" placeholder="required" type="text" required>
+    </label>
+    <label><b>Genre</b></label>
+    <label>
+        <input name="genre" placeholder="required" type="text" required>
+    </label>
+    <input type="button" name="button" value="Insert" onClick="add_movie(this.form)">
+</form>
+<div id="add_movie_message"></div>
 <h1>Metadata</h1>
 <p id = "meta">
 </p>
