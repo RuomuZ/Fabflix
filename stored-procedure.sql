@@ -4,12 +4,13 @@ create table helper(
 id int,
 max_movie_id varchar(45) not null,
 max_star_id varchar(45) not null,
+generator int,
 primary key (id)
 );
 
 INSERT INTO helper VALUES(1,(select max(id) 
 from movies),(select max(id) 
-from stars));
+from stars),1);
 
 
 DELIMITER $$
@@ -17,18 +18,25 @@ CREATE PROCEDURE insert_star (in star varchar(100),in dob int)
 BEGIN
 DECLARE max_id varchar(10);
 DECLARE new_id varchar(10);
+DECLARE gene int;
+START TRANSACTION;
 select max_star_id
 into max_id
 from helper
 where id = 1;
-Select concat(left(max_id,length(max_id)-1),char(ASCII(right(max_id,1))+1)) into new_id;
-update helper set max_star_id = new_id where id = 1;
+select generator
+into gene
+from helper
+where id = 1;
+Select concat(left(max_id,length(max_id)-1),char(ASCII(right(max_id,1))+gene)) into new_id;
+update helper set generator = (gene + 1) where id = 1;
 if (dob is not null) then
 INSERT INTO stars (id, name, birthYear) VALUES(new_id,star,dob);
 else
 INSERT INTO stars (id, name) VALUES(new_id,star);
 end if;
 Select new_id;
+commit;
 END
 $$
 DELIMITER ;
@@ -40,10 +48,12 @@ BEGIN
 DECLARE max_id varchar(45);
 DECLARE new_id varchar(45);
 DECLARE star_ID varchar(10);
+DECLARE gene int;
 DECLARE genre_ID int;
 DECLARE movie_msg varchar(50);
 DECLARE star_msg varchar(50);
 DECLARE genre_msg varchar(50);
+START TRANSACTION;
 if ((select count(*)
 from movies
 where mTitle = title and mYear = year and mDirector = director
@@ -52,10 +62,14 @@ select max_movie_id
 into max_id
 from helper
 where id = 1;
-Select concat(left(max_id,length(max_id)-1),char(ASCII(right(max_id,1))+1)) into new_id;
+select generator
+into gene
+from helper
+where id = 1;
+Select concat(left(max_id,length(max_id)-1),char(ASCII(right(max_id,1))+gene)) into new_id;
 INSERT INTO movies VALUES(new_id,mTitle,mYear,mDirector);
 INSERT INTO ratings VALUES(new_id,0,0);
-update helper set max_movie_id = new_id where id = 1;
+update helper set generator = (gene + 1) where id = 1;
 select concat("newly generated movie id: ", new_id, ";") into movie_msg;
 select id
 into star_ID
@@ -89,6 +103,7 @@ select concat(movie_msg, star_msg, genre_msg) as message;
 else
 select "duplicate movie!" as message;
 end if;
+commit;
 END
 $$
 
