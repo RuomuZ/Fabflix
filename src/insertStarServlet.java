@@ -39,19 +39,22 @@ public class insertStarServlet extends HttpServlet {
         String birthday = request.getParameter("birthday");
         System.out.println(star + "   " + birthday);
         try (Connection conn = dataSource.getConnection()) {
-            responseJsonObject.addProperty("status", "success");
-            responseJsonObject.addProperty("message", "insertion succeed, new star id is 1000");
-            /*
+
+
             String query = "call insert_star(?,?);";
             PreparedStatement statement = conn.prepareStatement(query);
             statement.setString(1, star);
             statement.setString(2, birthday);
             ResultSet rs = statement.executeQuery();
             if (rs.next()) {
-
+                responseJsonObject.addProperty("status", "success");
+                responseJsonObject.addProperty("message", "insert star successfully, new id is " +rs.getString("new_id"));
             }
-
-             */
+            else {
+                responseJsonObject.addProperty("status", "fail");
+                responseJsonObject.addProperty("message", "fail somehow");
+            }
+             
             response.getWriter().write(responseJsonObject.toString());
         } catch (Exception e) {
             JsonObject jsonObject = new JsonObject();
