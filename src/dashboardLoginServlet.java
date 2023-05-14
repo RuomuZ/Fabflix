@@ -12,11 +12,11 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
+
 import org.jasypt.util.password.StrongPasswordEncryptor;
 
-@WebServlet(name = "LoginServlet", urlPatterns = "/api/login")
-public class LoginServlet extends HttpServlet {
+@WebServlet(name = "dashBoardLoginServlet", urlPatterns = "/api/_dashboard")
+public class dashboardLoginServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
 
@@ -50,7 +50,7 @@ public class LoginServlet extends HttpServlet {
         String password = request.getParameter("password");
 
         try (Connection conn = dataSource.getConnection()) {
-            String query = "select password from customers where email = ?";
+            String query = "select password from employees where email = ?";
             PreparedStatement statement = conn.prepareStatement(query);
             statement.setString(1, username);
             ResultSet rs = statement.executeQuery();
@@ -61,6 +61,7 @@ public class LoginServlet extends HttpServlet {
 
                 String encryptedPassword = rs.getString("password");
                 boolean success = new StrongPasswordEncryptor().checkPassword(password, encryptedPassword);
+                System.out.println();
                 if (success) {
                     request.getSession().setAttribute("user", new User(username));
 

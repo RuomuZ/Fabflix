@@ -22,6 +22,7 @@ public class LoginFilter implements Filter {
         // Check if this URL is allowed to access without logging in
         if (this.isUrlAllowedWithoutLogin(httpRequest.getRequestURI())) {
             // Keep default action: pass along the filter chain
+            System.out.println("allowed:" + httpRequest.getRequestURI());
             chain.doFilter(request, response);
             return;
         }
@@ -47,6 +48,10 @@ public class LoginFilter implements Filter {
         allowedURIs.add("login.html");
         allowedURIs.add("login.js");
         allowedURIs.add("api/login");
+        allowedURIs.add("_dashboard.html");
+        allowedURIs.add("_dashboard.js");
+        allowedURIs.add("api/_dashboard");
+
     }
 
     public void destroy() {
