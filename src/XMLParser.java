@@ -71,6 +71,7 @@ public class XMLParser  extends DefaultHandler {
         String loginUrl = "jdbc:mysql://localhost:3306/moviedb";
         Class.forName("com.mysql.jdbc.Driver").newInstance();
         Connection connection = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
+        connection.setAutoCommit(false);
         Statement statement = connection.createStatement();
         String query = "select title from movies;";
         ResultSet rs = statement.executeQuery(query);
@@ -89,9 +90,10 @@ public class XMLParser  extends DefaultHandler {
         while (rs2.next()){
             exist_genres.put(rs2.getString("name"),Integer.parseInt(rs2.getString("id")));
         }
-        rs2.close();
-        statement.close();
 
+        rs2.close();
+        connection.commit();
+        statement.close();
     }
     public void run() throws IOException, SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         prepareHashTable();
@@ -185,6 +187,7 @@ public class XMLParser  extends DefaultHandler {
             String loginUrl = "jdbc:mysql://localhost:3306/moviedb?allowLoadLocalInfile=true";
             Class.forName("com.mysql.jdbc.Driver").newInstance();
             Connection connection = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
+            connection.setAutoCommit(false);
             Statement statement = connection.createStatement();
             String query = "LOAD DATA local INFILE 'load_movies.csv' " +
                     "INTO TABLE movies " +
@@ -210,6 +213,9 @@ public class XMLParser  extends DefaultHandler {
                     "INTO TABLE stars_in_movies " +
                     "FIELDS TERMINATED BY ',' ENCLOSED BY '\"'";
             rs = statement.execute(query);
+            connection.commit();
+            statement.close();
+
         }catch(Exception e)
         {
             e.printStackTrace();
