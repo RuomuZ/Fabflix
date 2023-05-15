@@ -78,18 +78,19 @@ function handleStarResult(resultData) {
                 '</a>' + "||";
         }
         rowHTML += "</th>";
-        const myArray = resultData[i]["movie_stars"].split(",");
-        rowHTML += "<th>";
-        for (let i = 0; i < myArray.length; i++)
-        {
-            rowHTML += '<a href="single-star.html?name=' + myArray[i] + '">'
-                + myArray[i] +     // display star_name for the link text
-                '</a>' + "||";
-        }
-        rowHTML += "</th>";
-        rowHTML += "<th>" + resultData[i]["movie_rating"] + "</th>";
-        let movie_title = resultData[i]["movie_title"];
-        rowHTML += "<th>";
+        if (resultData[i]["movie_stars"] != null) {
+            const myArray = resultData[i]["movie_stars"].split(",");
+            rowHTML += "<th>";
+            for (let i = 0; i < myArray.length; i++) {
+                rowHTML += '<a href="single-star.html?name=' + myArray[i] + '">'
+                    + myArray[i] +     // display star_name for the link text
+                    '</a>' + "||";
+            }
+            rowHTML += "</th>";
+            rowHTML += "<th>" + resultData[i]["movie_rating"] + "</th>";
+            let movie_title = resultData[i]["movie_title"];
+            rowHTML += "<th>";
+        } else {rowHTML += "<th>Empty</th>>";}
         console.log(movie_title);
         rowHTML += "<button onClick='handleAdd(\"" + movie_title + "\")'>ADD</button>";
 
