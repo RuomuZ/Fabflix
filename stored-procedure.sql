@@ -8,9 +8,7 @@ generator int,
 primary key (id)
 );
 
-INSERT INTO helper VALUES(1,(select max(id) 
-from movies),(select max(id) 
-from stars),1);
+INSERT INTO helper VALUES(1,"abcd","cdef",1);
 
 
 DELIMITER $$

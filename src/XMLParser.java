@@ -25,7 +25,7 @@ import java.io.IOException;
 public class XMLParser  extends DefaultHandler {
     static int mode = 0;  //0 means mains243.xml, 1 means casts124.xml, 2 means actors63.xml.
     HashMap<String,Integer> exist_movies;
-    HashMap<String,Integer> exist_stars;
+    HashMap<String,String> exist_stars;
     HashMap<String,Integer> exist_genres;
     ArrayList<Movie> movies;
     ArrayList<Actor> actors;
@@ -36,6 +36,7 @@ public class XMLParser  extends DefaultHandler {
     String currentDirector;
     FileWriter inconsistency;
     int star_id_index;
+
 
     public XMLParser() {
         exist_movies = new HashMap<>();
@@ -80,7 +81,7 @@ public class XMLParser  extends DefaultHandler {
         query = "select id,name from stars;";
         ResultSet rs1 = statement.executeQuery(query);
         while (rs1.next()){
-            exist_stars.put(rs1.getString("name"),-1);
+            exist_stars.put(rs1.getString("name"),rs1.getString("id"));
         }
         rs1.close();
         query = "select id,name from genres;";
@@ -90,9 +91,7 @@ public class XMLParser  extends DefaultHandler {
         }
         rs2.close();
         statement.close();
-        System.out.println("size of exists movies:" + exist_movies.size());
-        System.out.println("size of exists stars:" + exist_stars.size());
-        System.out.println("size of exists genres:" + exist_genres.size());
+
     }
     public void run() throws IOException, SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         prepareHashTable();
@@ -120,6 +119,8 @@ public class XMLParser  extends DefaultHandler {
             s = new InputSource("stanford-movies/casts124.xml");
             s.setEncoding("ISO-8859-1");
             sp.parse(s, this);
+
+            //write csv file to load
             FileWriter load_movies = new FileWriter("load_movies.csv");
             CSVWriter lm = new CSVWriter(load_movies);
             FileWriter load_genres = new FileWriter("load_genres.csv");
@@ -127,16 +128,16 @@ public class XMLParser  extends DefaultHandler {
             FileWriter load_stars = new FileWriter("load_stars.csv");
             CSVWriter ls = new CSVWriter(load_stars);
             FileWriter load_stars_in_movies = new FileWriter("load_stars_in_movies.csv");
+            CSVWriter lsm = new CSVWriter(load_stars_in_movies);
             FileWriter load_genres_in_movies = new FileWriter("load_genres_in_movies.csv");
+            CSVWriter lgm = new CSVWriter(load_genres_in_movies);
+            FileWriter load_ratings = new FileWriter("load_ratings.csv");
+            CSVWriter lr = new CSVWriter(load_ratings);
             for (String i: genres){
                 String[] row = {i};
                 lg.writeNext(row);
             }
-            for (Movie i : movies){
-                String[] row = {i.getId(),i.getTitle(),""+i.getYear(),i.getDirector()};
-                lm.writeNext(row);
-            }
-            lm.close();
+            lg.close();
             for (Actor i : actors){
                 String m;
                 if (i.getDob() == -1){
@@ -148,11 +149,21 @@ public class XMLParser  extends DefaultHandler {
                 ls.writeNext(row);
             }
             ls.close();
-
-            load_genres.close();
-
-            load_stars_in_movies.close();
-            load_genres_in_movies.close();
+            for (Movie i : movies){
+                String[] row = {i.getId(),i.getTitle(),""+i.getYear(),i.getDirector()};
+                lm.writeNext(row);
+                for (Actor k : i.getActor()){
+                    lsm.writeNext(new String[]{k.getId(),i.getId()});
+                }
+                for (String k : i.getGenre()){
+                    lgm.writeNext(new String[]{""+exist_genres.get(k),i.getId()});
+                }
+                lr.writeNext(new String[]{i.getId()});
+            }
+            lm.close();
+            lsm.close();
+            lgm.close();
+            lr.close();
 
         } catch (SAXException se) {
             se.printStackTrace();
@@ -179,8 +190,24 @@ public class XMLParser  extends DefaultHandler {
                     "INTO TABLE movies " +
                     "FIELDS TERMINATED BY ',' ENCLOSED BY '\"'";
             boolean rs = statement.execute(query);
+            query = "LOAD DATA local INFILE 'load_genres.csv' " +
+                    "INTO TABLE genres " +
+                    "FIELDS TERMINATED BY ',' ENCLOSED BY '\"'";
+            rs = statement.execute(query);
             query = "LOAD DATA local INFILE 'load_stars.csv' " +
                     "INTO TABLE stars " +
+                    "FIELDS TERMINATED BY ',' ENCLOSED BY '\"'";
+            rs = statement.execute(query);
+            query = "LOAD DATA local INFILE 'load_ratings.csv' " +
+                    "INTO TABLE ratings " +
+                    "FIELDS TERMINATED BY ',' ENCLOSED BY '\"'";
+            rs = statement.execute(query);
+            query = "LOAD DATA local INFILE 'load_genres_in_movies.csv' " +
+                    "INTO TABLE genres_in_movies " +
+                    "FIELDS TERMINATED BY ',' ENCLOSED BY '\"'";
+            rs = statement.execute(query);
+            query = "LOAD DATA local INFILE 'load_stars_in_movies.csv' " +
+                    "INTO TABLE stars_in_movies " +
                     "FIELDS TERMINATED BY ',' ENCLOSED BY '\"'";
             rs = statement.execute(query);
         }catch(Exception e)
@@ -206,7 +233,11 @@ public class XMLParser  extends DefaultHandler {
                 tempActor = new Actor();
             }
         } else if (mode == 2){
-
+            if (qName.equalsIgnoreCase("filmc")){
+                tempMovie = new Movie();
+            }else if (qName.equalsIgnoreCase("is")){
+                currentDirector = "";
+            }
         }
     }
 
@@ -245,7 +276,7 @@ public class XMLParser  extends DefaultHandler {
 
                 } else if (qName.equalsIgnoreCase("cat")) {
                     tempMovie.setGenre(tempVal);
-                    if (!exist_genres.containsKey(tempVal)){
+                    if (!exist_genres.containsKey(tempVal) && !tempVal.equals("")){
                         exist_genres.put(tempVal,exist_genres.size());
                         genres.add(tempVal);
                         System.out.println(tempVal);
@@ -277,12 +308,40 @@ public class XMLParser  extends DefaultHandler {
                     String new_id = "xml" + star_id_index;
                     star_id_index += 1;
                     tempActor.setId(new_id);
-                    exist_stars.put(tempActor.getName(),actors.size());
+                    exist_stars.put(tempActor.getName(),new_id);
                     actors.add(tempActor);
                 }
             }
         } else if (mode == 2){
-
+            if (qName.equalsIgnoreCase("is")) {
+                currentDirector = tempVal;
+            } else if (tempMovie != null){
+                if (qName.equalsIgnoreCase("f")) {
+                    tempMovie.setId(tempVal);
+                } else if (qName.equalsIgnoreCase("filmc")) {
+                    tempMovie.setDirector(currentDirector);
+                    exist_movies.put(tempMovie.getTitle(),movies.size());
+                    movies.add(tempMovie);
+                }
+                else if (qName.equalsIgnoreCase("t")) {
+                    if (exist_movies.containsKey(tempVal)){
+                        tempMovie = null;
+                    }else{tempMovie.setTitle(tempVal);}
+                }  else if (qName.equalsIgnoreCase("a")) {
+                    if (exist_stars.containsKey(tempVal)){
+                        tempActor = new Actor();
+                        tempActor.setId(exist_stars.get(tempVal));
+                        tempActor.setName(tempVal);
+                        tempMovie.setActor(tempActor);
+                    } else{
+                        try {
+                            inconsistency.write(tempVal + " in cast does not exist in actor, omit then.\n");
+                        } catch (IOException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                    }
+                }
+            }
         }
     }
 
