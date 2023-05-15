@@ -33,10 +33,8 @@ public class SingleMovieServlet extends HttpServlet {
         }
     }
 
-    /**
-     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-     * response)
-     */
+
+
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         response.setContentType("application/json"); // Response mime type
@@ -113,7 +111,7 @@ public class SingleMovieServlet extends HttpServlet {
             out.close();
         }
 
-        // Always remember to close db connection after usage. Here it's done by try-with-resources
+
 
     }
 

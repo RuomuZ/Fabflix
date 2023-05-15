@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <title>Search Movie</title>
+</head>
+<body>
+<p>
+    <a href="SearchMovie.html">Back to Main Page></a>
+</p>
+<h2>Add star</h2>
+<form>
+    <label><b>Star name</b></label>
+    <label>
+        <input name="star" placeholder="required" type="text" required>
+    </label>
+    <label><b>Birthday</b></label>
+    <label>
+        <input name="birthday" placeholder="optional" type="text">
+    </label>
+    <input type="button" name="button" value="Insert" onClick="insert_star(this.form)">
+</form>
+<div id="insert_star_message"></div>
+<h2>Add movie</h2>
+<form>
+    <label><b>Movie Title</b></label>
+    <label>
+        <input name="title" placeholder="required" type="text" required>
+    </label>
+    <label><b>Movie Year</b></label>
+    <label>
+        <input name="year" placeholder="required" type="text" required>
+    </label>
+    <label><b>Movie Director</b></label>
+    <label>
+        <input name="director" placeholder="required" type="text" required>
+    </label>
+    <label><b>Star name</b></label>
+    <label>
+        <input name="star" placeholder="required" type="text" required>
+    </label>
+    <label><b>Genre</b></label>
+    <label>
+        <input name="genre" placeholder="required" type="text" required>
+    </label>
+    <input type="button" name="button" value="Insert" onClick="add_movie(this.form)">
+</form>
+<div id="add_movie_message"></div>
+<h1>Metadata</h1>
+<p id = "meta">
+</p>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+<script src="dashboard.js"></script>
+</body>
+</html>

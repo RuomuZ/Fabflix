@@ -17,14 +17,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 
-// Declaring a WebServlet called StarsServlet, which maps to url "/api/stars"
 @WebServlet(name = "BrowseMovie", urlPatterns = "/api/BrowseMovie.html")
 public class BrowseMovie extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-    // Create a dataSource which registered in web.
     private DataSource dataSource;
 
     public void init(ServletConfig config) {
@@ -56,6 +55,7 @@ public class BrowseMovie extends HttpServlet {
         String order = request.getParameter("sorted");
         String url = request.getRequestURL().toString();
         String para = request.getQueryString();
+        ArrayList<String> paras = new ArrayList<String>();
         if (para != null) {
             url += "?" + para.toString();
         }
@@ -70,14 +70,19 @@ public class BrowseMovie extends HttpServlet {
                 query+=", stars as k,stars_in_movies as l ";
             }
             query += "where ";
-            if(title != null&& !title.equals("")) {query += "u.title like " + "\"%" + title + "%\"";flag = 1;}
+            if(title != null&& !title.equals("")) {
+                query += "u.title like ?";
+                flag = 1;
+                paras.add("title");
+            }
             if(year != null&& !year.equals("")) {
                 if (flag == 0){
                     flag = 1;
                 } else {
                     query += " and ";
                 }
-                query += "u.year = " + "\"" + year + "\"";
+                query += "u.year = ?";
+                paras.add("year");
             }
             if(director != null&& !director.equals("")) {
                 if (flag == 0){
@@ -85,7 +90,8 @@ public class BrowseMovie extends HttpServlet {
                 } else {
                     query += " and ";
                 }
-                query += "u.director like " + "\"%" + director + "%\"";
+                    query += "u.director like ?";
+                paras.add("director");
             }
             if(star != null&& !star.equals("")) {
                 if (flag == 0){
@@ -93,26 +99,42 @@ public class BrowseMovie extends HttpServlet {
                 } else {
                     query += " and ";
                 }
-                query += "k.name like " + "\"%" + star + "%\" " + " and k.id = l.starId and l.movieId = u.id";
+                    query += "k.name like ? and k.id = l.starId and l.movieId = u.id";
+                paras.add("star");
             }
             if (genre != null)
             {
-                query = "select u.title, u.year, u.director, v.rating, (select group_concat(distinct v.name order by v.name separator \",\") from (select x.name from stars as x, stars_in_movies as y where y.movieId = u.id and y.starId = x.id order by x.name limit 3) as v) as movie_stars, (select group_concat(distinct v.name order by v.name separator \",\") from (select x.name from genres as x, genres_in_movies as y where y.movieId = u.id and y.genreId = x.id order by x.name limit 3) as v) as movie_genres from movies as u, ratings as v, genres as g, genres_in_movies as l where ";
-                query += String.format("g.name = \"%s\" ", genre);
-                query += " and g.id = l.genreId and l.movieId = u.id";
+                query = "select u.title, u.year, u.director, v.rating, " +
+                        "(select group_concat(distinct v.name order by v.name separator \",\") from (select x.name from stars as x, " +
+                        "stars_in_movies as y where y.movieId = u.id and y.starId = x.id order by x.name limit 3) as v) as movie_stars, " +
+                        "(select group_concat(distinct v.name order by v.name separator \",\") " +
+                        "from (select x.name from genres as x, genres_in_movies as y where y.movieId = u.id" +
+                        " and y.genreId = x.id order by x.name limit 3) as v) as movie_genres from movies as u," +
+                        " ratings as v, genres as g, genres_in_movies as l where g.name = ?  and g.id = l.genreId and l.movieId = u.id";
+               paras.add("genre");
+                // query += String.format("g.name = \"%s\" ", genre);
+               // query += " and g.id = l.genreId and l.movieId = u.id";
                 flag = 1;
             }
             if (cha != null)
             {
                 if (cha.equals("*"))
                 {
-                    query = "select u.title, u.year, u.director, v.rating, (select group_concat(distinct v.name order by v.name separator \",\") from (select x.name from stars as x, stars_in_movies as y where y.movieId = u.id and y.starId = x.id order by x.name limit 3) as v) as movie_stars, (select group_concat(distinct v.name order by v.name separator \",\") from (select x.name from genres as x, genres_in_movies as y where y.movieId = u.id and y.genreId = x.id order by x.name limit 3) as v) as movie_genres from movies as u, ratings as v where ";
+                    query = "select u.title, u.year, u.director, v.rating, " +
+                            "(select group_concat(distinct v.name order by v.name separator \",\")" +
+                            " from (select x.name from stars as x, stars_in_movies as y where y.movieId = u.id" +
+                            " and y.starId = x.id order by x.name limit 3) as v) as movie_stars," +
+                            " (select group_concat(distinct v.name order by v.name separator \",\")" +
+                            " from (select x.name from genres as x, genres_in_movies as y where y.movieId" +
+                            " = u.id and y.genreId = x.id order by x.name limit 3) as v) as movie_genres" +
+                            " from movies as u, ratings as v where ";
                     query += "u.title not regexp  \"^[a-zA-Z0-9]\"";
                     flag = 1;
                 }
                 else {
                     query = "select u.title, u.year, u.director, v.rating, (select group_concat(distinct v.name order by v.name separator \",\") from (select x.name from stars as x, stars_in_movies as y where y.movieId = u.id and y.starId = x.id order by x.name limit 3) as v) as movie_stars, (select group_concat(distinct v.name order by v.name separator \",\") from (select x.name from genres as x, genres_in_movies as y where y.movieId = u.id and y.genreId = x.id order by x.name limit 3) as v) as movie_genres from movies as u, ratings as v where ";
-                    query += "u.title like " + "\"" + cha + "%\"";
+                    query += "u.title like ?";
+                    paras.add("cha");
                     flag = 1;
                 }
             }
@@ -124,7 +146,29 @@ public class BrowseMovie extends HttpServlet {
                 String query2 = query +"u.id = v.MovieId;";
                 query2 = query2.replace("u.title, u.year, u.director, v.rating, (select group_concat(distinct v.name order by v.name separator \",\") from (select x.name from stars as x, stars_in_movies as y where y.movieId = u.id and y.starId = x.id order by x.name limit 3) as v) as movie_stars, (select group_concat(distinct v.name order by v.name separator \",\") from (select x.name from genres as x, genres_in_movies as y where y.movieId = u.id and y.genreId = x.id order by x.name limit 3) as v) as movie_genres ", "count(*) as total ");
                 System.out.println("query 2 = " + query2);
+                //prepare statement to count records
                 PreparedStatement statement = conn.prepareStatement(query2);
+                for (int i = 0; i < paras.size(); ++i){
+                    if (paras.get(i).equals("title")){
+                        statement.setString(i+1,"%" + title + "%");
+                    }
+                    else if (paras.get(i).equals("year")){
+                        statement.setString(i+1,year);
+                    }
+                    else if (paras.get(i).equals("director")){
+                        statement.setString(i+1,"%" + director + "%");
+                    }
+                    else if (paras.get(i).equals("star")){
+                        statement.setString(i+1,"%" + star + "%");
+                    }
+                    else if (paras.get(i).equals("genre")){
+                        statement.setString(i+1,genre);
+                    }
+                    else if (paras.get(i).equals("cha")){
+                        statement.setString(i+1,"" + cha + "%");
+                    }
+                }
+
                 ResultSet rs = statement.executeQuery();
                 String t = "";
                 if (rs.next()){
@@ -162,9 +206,39 @@ public class BrowseMovie extends HttpServlet {
             }else if (order.equals("rdtd")){
                 query += ", order by rating DESC,title DESC ";
             }
-            query += " limit " + load + " offset " + offset + ";";
+            paras.add("load");
+            paras.add("offset");
+            query += " limit ? offset ?;";
             System.out.println(query);
             PreparedStatement statement = conn.prepareStatement(query);
+
+            for (int i = 0; i < paras.size(); ++i){
+                if (paras.get(i).equals("title")){
+                    statement.setString(i+1,"%" + title + "%");
+                }
+                else if (paras.get(i).equals("year")){
+                    statement.setString(i+1,year);
+                }
+                else if (paras.get(i).equals("director")){
+                    statement.setString(i+1,"%" + director + "%");
+                }
+                else if (paras.get(i).equals("star")){
+                    statement.setString(i+1,"%" + star + "%");
+                }
+                else if (paras.get(i).equals("genre")){
+                    statement.setString(i+1,genre);
+                }
+                else if (paras.get(i).equals("cha")){
+                    statement.setString(i+1,cha + "%");
+                }
+                else if (paras.get(i).equals("load")){
+                    statement.setInt(i+1,Integer.parseInt(load));
+                }
+                else if (paras.get(i).equals("offset")){
+                    statement.setInt(i+1,Integer.parseInt(offset));
+                }
+            }
+
             ResultSet rs = statement.executeQuery();
             JsonArray jsonArray = new JsonArray();
             JsonObject jsonNum = new JsonObject();

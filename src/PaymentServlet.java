@@ -17,9 +17,7 @@ import java.util.ArrayList;
 
 @WebServlet(name = "PaymentServlet", urlPatterns = "/api/pay")
 public class PaymentServlet extends HttpServlet {
-    /**
-     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-     */
+
     private static final long serialVersionUID = 1L;
 
     // Create a dataSource which registered in web.

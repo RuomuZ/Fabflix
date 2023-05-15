@@ -17,12 +17,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-// Declaring a WebServlet called SingleStarServlet, which maps to url "/api/single-star"
+
 @WebServlet(name = "SingleStarServlet", urlPatterns = "/api/single-star")
 public class SingleStarServlet extends HttpServlet {
     private static final long serialVersionUID = 2L;
 
-    // Create a dataSource which registered in web.xml
+
     private DataSource dataSource;
 
     public void init(ServletConfig config) {
@@ -33,26 +33,23 @@ public class SingleStarServlet extends HttpServlet {
         }
     }
 
-    /**
-     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-     * response)
-     */
+
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         response.setContentType("application/json"); // Response mime type
 
-        // Retrieve parameter id from url request.
+
         String id = request.getParameter("name");
 
-        // The log message can be found in localhost log
+
         request.getServletContext().log("getting id: " + id);
         HttpSession session = request.getSession();
-        // Output stream to STDOUT
+
         PrintWriter out = response.getWriter();
 
-        // Get a connection from dataSource and let resource manager close the connection after usage.
+
         try (Connection conn = dataSource.getConnection()) {
-            // Get a connection from dataSource
+
 
             // Construct a query with parameter represented by "?"
             String query = "select u.name, u.birthYear, (select group_concat(distinct v.title order by v.title separator \",\") from (select x.title from movies as x, stars_in_movies as y where y.starId = u.id and y.movieId = x.id) as v) as allMovies from stars as u where u.name = ?;";
@@ -78,10 +75,6 @@ public class SingleStarServlet extends HttpServlet {
                 String starName = rs.getString("name");
                 String starDob = rs.getString("birthYear");
                 String allMovies = rs.getString("allMovies");
-//                String movieTitle = rs.getString("title");
-
-
-                // Create a JsonObject based on the data we retrieve from rs
 
                 JsonObject jsonObject = new JsonObject();
                 jsonObject.addProperty("star_name", starName);
