@@ -64,6 +64,7 @@ public class dashboardLoginServlet extends HttpServlet {
                 System.out.println();
                 if (success) {
                     request.getSession().setAttribute("user", new User(username));
+                    request.getSession().setAttribute("emp", new User(username));
 
                     responseJsonObject.addProperty("status", "success");
                     responseJsonObject.addProperty("message", "success");
