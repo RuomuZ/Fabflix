@@ -134,7 +134,7 @@ public class XMLParser  extends DefaultHandler {
             FileWriter load_ratings = new FileWriter("load_ratings.csv");
             CSVWriter lr = new CSVWriter(load_ratings);
             for (String i: genres){
-                String[] row = {i};
+                String[] row = {""+exist_genres.get(i),i};
                 lg.writeNext(row);
             }
             lg.close();
