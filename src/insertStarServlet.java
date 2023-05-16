@@ -9,11 +9,8 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Types;
-import java.sql.Statement;
+import java.sql.*;
+
 import org.jasypt.util.password.StrongPasswordEncryptor;
 
 @WebServlet(name = "insertStarServlet", urlPatterns = "/api/insertStar")
@@ -42,8 +39,8 @@ public class insertStarServlet extends HttpServlet {
         try (Connection conn = dataSource.getConnection()) {
 
 
-            String query = "call insert_star(?,?);";
-            PreparedStatement statement = conn.prepareStatement(query);
+            String query = "call insert_star(?,?,?);";
+            CallableStatement statement = conn.prepareCall(query);
             statement.setString(1, star);
             if (birthday.equals("")){
                 statement.setNull(2, Types.NULL);
@@ -51,15 +48,11 @@ public class insertStarServlet extends HttpServlet {
             else{
                 statement.setInt(2, Integer.parseInt(birthday));
             }
-            ResultSet rs = statement.executeQuery();
-            if (rs.next()) {
-                responseJsonObject.addProperty("status", "success");
-                responseJsonObject.addProperty("message", "insert star successfully, new id is " +rs.getString("new_id"));
-            }
-            else {
-                responseJsonObject.addProperty("status", "fail");
-                responseJsonObject.addProperty("message", "fail somehow");
-            }
+            statement.registerOutParameter(3,java.sql.Types.VARCHAR);
+            statement.executeUpdate();
+            responseJsonObject.addProperty("status", "success");
+            responseJsonObject.addProperty("message", "insert star successfully, new id is " + statement.getString(3));
+
 
             response.getWriter().write(responseJsonObject.toString());
         } catch (Exception e) {

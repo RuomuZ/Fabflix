@@ -88,9 +88,10 @@ function handleStarResult(resultData) {
             }
             rowHTML += "</th>";
             rowHTML += "<th>" + resultData[i]["movie_rating"] + "</th>";
-            let movie_title = resultData[i]["movie_title"];
+
             rowHTML += "<th>";
         } else {rowHTML += "<th>Empty</th>>";}
+        let movie_title = resultData[i]["movie_title"];
         console.log(movie_title);
         rowHTML += "<button onClick='handleAdd(\"" + movie_title + "\")'>ADD</button>";
 

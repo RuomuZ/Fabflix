@@ -5,7 +5,7 @@ public class Movie {
     private String id;
     private int year;
     private String director;
-    private ArrayList<Actor> actors;
+    private ArrayList<String> actors;
     private ArrayList<String> genres;
     public Movie(){
         actors = new ArrayList<>();
@@ -46,11 +46,11 @@ public class Movie {
         this.director = director;
     }
 
-    public void setActor(Actor actor) {
+    public void setActor(String actor) {
         this.actors.add(actor);
     }
 
-    public ArrayList<Actor> getActor() {
+    public ArrayList<String> getActor() {
         return actors;
     }
     public void setGenre(String genre) {

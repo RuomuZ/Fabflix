@@ -41,7 +41,7 @@ public class addMovieServlet extends HttpServlet {
         String genre = request.getParameter("genre");
         try (Connection conn = dataSource.getConnection()) {
 
-            String query = "call add_movie(?,?,?,?,null,?);";
+            String query = "call add_movie(?,?,?,?,?);";
             System.out.println(query);
             PreparedStatement statement = conn.prepareStatement(query);
             statement.setString(1, title);

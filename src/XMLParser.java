@@ -1,5 +1,6 @@
 import java.sql.*;
 import java.util.HashMap;
+import java.util.Map;
 import java.io.*;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -25,9 +26,11 @@ import java.io.IOException;
 public class XMLParser  extends DefaultHandler {
     static int mode = 0;  //0 means mains243.xml, 1 means casts124.xml, 2 means actors63.xml.
     HashMap<String,Integer> exist_movies;
+    HashMap<String,Movie> new_movies;
     HashMap<String,String> exist_stars;
+    HashMap<String,Actor> new_stars;
     HashMap<String,Integer> exist_genres;
-    ArrayList<Movie> movies;
+    //ArrayList<Movie> movies;
     ArrayList<Actor> actors;
     ArrayList<String> genres;
     String tempVal;
@@ -36,13 +39,16 @@ public class XMLParser  extends DefaultHandler {
     String currentDirector;
     FileWriter inconsistency;
     int star_id_index;
+    String currentStar;
+    String currentMovie;
 
 
     public XMLParser() {
         exist_movies = new HashMap<>();
+        new_movies = new HashMap<>();
         exist_stars = new HashMap<>();
+        new_stars = new HashMap<>();
         exist_genres = new HashMap<>();
-        movies = new ArrayList<>();
         actors = new ArrayList<>();
         genres = new ArrayList<>();
         star_id_index = 0;
@@ -54,16 +60,7 @@ public class XMLParser  extends DefaultHandler {
         }
     }
 
-    public String escapeSpecialCharacters(String data) {
-        String escapedData = data.replaceAll("\\R", " ");
-        if (data.contains(",") || data.contains("\"") || data.contains("'") || data.contains("\\\'")) {
-            data = data.replace("\"", "");
-            data = data.replace(",", "");
-            data = data.replace("\\\'", "");
-            escapedData = data;
-        }
-        return escapedData;
-    }
+
 
     void prepareHashTable() throws ClassNotFoundException, InstantiationException, IllegalAccessException, SQLException {
         String loginUser = "mytestuser";
@@ -94,6 +91,7 @@ public class XMLParser  extends DefaultHandler {
         rs2.close();
         connection.commit();
         statement.close();
+        System.out.println("Tom Cr " + exist_stars.get("Tom Cruise"));
     }
     public void run() throws IOException, SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         prepareHashTable();
@@ -140,25 +138,49 @@ public class XMLParser  extends DefaultHandler {
                 lg.writeNext(row);
             }
             lg.close();
-            for (Actor i : actors){
+            for (Map.Entry<String, Actor> entry : new_stars.entrySet()){
+                Actor i = entry.getValue();
                 String m;
                 if (i.getDob() == -1){
                     m = null;
                 }else{
                     m = ""+i.getDob();
                 }
-                String[] row = {i.getId(),escapeSpecialCharacters(i.getName()),m};
+                String[] row = {i.getId(),i.getName(),m};
                 ls.writeNext(row);
             }
             ls.close();
-            for (Movie i : movies){
+            for (Map.Entry<String, Movie> entry : new_movies.entrySet()){
+                Movie i = entry.getValue();
                 String[] row = {i.getId(),i.getTitle(),""+i.getYear(),i.getDirector()};
                 lm.writeNext(row);
-                for (Actor k : i.getActor()){
-                    lsm.writeNext(new String[]{k.getId(),i.getId()});
+                ArrayList<String> a = new ArrayList<>();
+                if (i.getId() == null){
+                    inconsistency.write("Movie id is null in " + i.getTitle() + "\n");
+                    continue;
                 }
+
+                for (String k : i.getActor()){
+                    if (k == null){
+                        inconsistency.write("A movie star name is null in " + i.getTitle() + "\n");
+                    }
+                    else if (a.contains(k)){
+                        inconsistency.write("duplicate star name "+ k +" in movie " + i.getTitle() + "\n");
+                    }else if (exist_stars.containsKey(k)){
+                        lsm.writeNext(new String[]{exist_stars.get(k),i.getId()});
+                    } else if (new_stars.containsKey(k)){
+                        lsm.writeNext(new String[]{new_stars.get(k).getId(),i.getId()});
+                    }else{
+                        inconsistency.write("Movie star " + k + " in movie " + i.getTitle() + " not found.\n");
+                    }
+
+                }
+                //lsm.writeNext(new String[]{k.getId(),i.getId()});
+                //a.add(k.getId());
                 for (String k : i.getGenre()){
-                    lgm.writeNext(new String[]{""+exist_genres.get(k),i.getId()});
+                    if (i.getId() != null){
+                        lgm.writeNext(new String[]{""+exist_genres.get(k),i.getId()});
+                    }
                 }
                 lr.writeNext(new String[]{i.getId()});
             }
@@ -239,10 +261,12 @@ public class XMLParser  extends DefaultHandler {
                 tempActor = new Actor();
             }
         } else if (mode == 2){
-            if (qName.equalsIgnoreCase("filmc")){
-                tempMovie = new Movie();
-            }else if (qName.equalsIgnoreCase("is")){
+            if (qName.equalsIgnoreCase("is")){
                 currentDirector = "";
+            } else if (qName.equalsIgnoreCase("a")) {
+                currentStar = "";
+            } else if (qName.equalsIgnoreCase("t")){
+                currentMovie = "";
             }
         }
     }
@@ -260,20 +284,28 @@ public class XMLParser  extends DefaultHandler {
                     tempMovie.setId(tempVal);
                 } else if (qName.equalsIgnoreCase("film")) {
                     tempMovie.setDirector(currentDirector);
-                    exist_movies.put(tempMovie.getTitle(),movies.size());
-                    movies.add(tempMovie);
+                    new_movies.put(tempMovie.getTitle(),tempMovie);
+                    //System.out.println(String.format("Movie %s put, id %s, director %s, year %d", tempMovie.getTitle(),tempMovie.getId(),tempMovie.getDirector(),tempMovie.getYear()));
+
                 }
                 else if (qName.equalsIgnoreCase("t")) {
                     if (exist_movies.containsKey(tempVal)){
                         tempMovie = null;
+                        try {
+                            inconsistency.write("movie " + tempVal + " already exist in database\n");
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
                     }else{tempMovie.setTitle(tempVal);}
                 } else if (qName.equalsIgnoreCase("year")) {
                     try{
+                        tempVal.replace("@", "");
+                        tempVal.replace("+", "");
                         tempMovie.setYear(Integer.parseInt(tempVal));
                     }catch (NumberFormatException e){
                         //e.printStackTrace();
                         try {
-                            inconsistency.write(tempMovie.getId() + tempMovie.getTitle() + " has inconsistent year " + tempVal + "\n");
+                            inconsistency.write(tempMovie.getId() + tempMovie.getTitle() + " has inconsistent year \n");
                         } catch (IOException ex) {
                             throw new RuntimeException(ex);
                         }
@@ -285,7 +317,7 @@ public class XMLParser  extends DefaultHandler {
                     if (!exist_genres.containsKey(tempVal) && !tempVal.equals("")){
                         exist_genres.put(tempVal,exist_genres.size());
                         genres.add(tempVal);
-                        System.out.println(tempVal);
+
                     }
                 }
             }
@@ -294,12 +326,21 @@ public class XMLParser  extends DefaultHandler {
                 if (qName.equalsIgnoreCase("stagename")){
                     if (exist_stars.containsKey(tempVal)){
                         tempActor = null;
+                    }else if (new_stars.containsKey(tempVal))
+                    {
+                        try {
+                            inconsistency.write("duplicate actor " + tempVal);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
                     }
                     else{
                         tempActor.setName(tempVal);
                     }
                 } else if (qName.equalsIgnoreCase("dob")){
                     try{
+                        tempVal.replace("@","");
+                        tempVal.replace("+","");
                         tempActor.setDob(Integer.parseInt(tempVal));
                     }catch (NumberFormatException e){
                         //e.printStackTrace();
@@ -314,32 +355,38 @@ public class XMLParser  extends DefaultHandler {
                     String new_id = "xml" + star_id_index;
                     star_id_index += 1;
                     tempActor.setId(new_id);
-                    exist_stars.put(tempActor.getName(),new_id);
-                    actors.add(tempActor);
+                    new_stars.put(tempActor.getName(),tempActor);
                 }
             }
         } else if (mode == 2){
             if (qName.equalsIgnoreCase("is")) {
                 currentDirector = tempVal;
-            } else if (tempMovie != null){
-                if (qName.equalsIgnoreCase("f")) {
-                    tempMovie.setId(tempVal);
-                } else if (qName.equalsIgnoreCase("filmc")) {
-                    tempMovie.setDirector(currentDirector);
-                    exist_movies.put(tempMovie.getTitle(),movies.size());
-                    movies.add(tempMovie);
-                }
+            }
                 else if (qName.equalsIgnoreCase("t")) {
-                    if (exist_movies.containsKey(tempVal)){
-                        tempMovie = null;
-                    }else{tempMovie.setTitle(tempVal);}
+                    if (!new_movies.containsKey(tempVal)){
+                        try {
+                            inconsistency.write("Movie " + tempVal + " not found\n");
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }else{currentMovie = tempVal;}
                 }  else if (qName.equalsIgnoreCase("a")) {
-                    if (exist_stars.containsKey(tempVal)){
-                        tempActor = new Actor();
-                        tempActor.setId(exist_stars.get(tempVal));
-                        tempActor.setName(tempVal);
-                        tempMovie.setActor(tempActor);
-                    } else{
+                    //System.out.println(tempVal);
+                    //System.out.println(new_stars.containsKey(tempVal));
+                    if (new_stars.containsKey(tempVal)||exist_stars.containsKey(tempVal)){
+                        if (new_movies.containsKey(currentMovie)){
+                            new_movies.get(currentMovie).setActor(tempVal);
+                        }
+                        else{
+                            try {
+                                inconsistency.write(currentMovie + " does not exist when connecting actors and movies.\n");
+                            } catch (IOException ex) {
+                                throw new RuntimeException(ex);
+                            }
+                        }
+                    }
+
+                    else{
                         try {
                             inconsistency.write(tempVal + " in cast does not exist in actor, omit then.\n");
                         } catch (IOException ex) {
@@ -347,7 +394,7 @@ public class XMLParser  extends DefaultHandler {
                         }
                     }
                 }
-            }
+
         }
     }
 
