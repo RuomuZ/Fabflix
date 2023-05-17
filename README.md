@@ -6,6 +6,8 @@ Member: Ruomu Zhao
 url to the video: https://drive.google.com/file/d/1mww9-kPwi5R15nMjHqFX8qUQjILgshPG/view?usp=sharing
 website url: https://ec2-3-141-2-69.us-east-2.compute.amazonaws.com:8443/cs122b-project1-api-example/SearchMovie.html
 
+I used hashmap for the existing data and fill the incoming data in other hashtable. After that, I iterate though those hashmap to wrote csv files, and use load data local infile to import those data into the database. I use this approach from the start and it works fine. I take 7 seconds on AWS server.
+
 I registered a domain name fablix-fish.xyz for my server, but as I am writting this readme, they are not finished mapping.
 
 I used preparedstatement in java files: BrowseMovie, addMovieServlet.java, getGenreServlet, LoginServlet, metaServlet, paymentservlet, singleStarServlet, singleMovieServlet
