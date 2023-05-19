@@ -71,7 +71,8 @@ public class BrowseMovie extends HttpServlet {
             }
             query += "where ";
             if(title != null&& !title.equals("")) {
-                query += "u.title like ?";
+
+                query += "match(title) against (? IN BOOLEAN MODE)";
                 flag = 1;
                 paras.add("title");
             }
@@ -150,7 +151,14 @@ public class BrowseMovie extends HttpServlet {
                 PreparedStatement statement = conn.prepareStatement(query2);
                 for (int i = 0; i < paras.size(); ++i){
                     if (paras.get(i).equals("title")){
-                        statement.setString(i+1,"%" + title + "%");
+                        String[] t = title.split(" ");
+                        StringBuffer sb = new StringBuffer();
+                        for(int k = 0; k < t.length; k++) {
+                            sb.append("+" + t[k] + "* ");
+                        }
+                        String str = sb.toString();
+                        System.out.println(str);
+                        statement.setString(i+1,str);
                     }
                     else if (paras.get(i).equals("year")){
                         statement.setString(i+1,year);
@@ -214,7 +222,13 @@ public class BrowseMovie extends HttpServlet {
 
             for (int i = 0; i < paras.size(); ++i){
                 if (paras.get(i).equals("title")){
-                    statement.setString(i+1,"%" + title + "%");
+                    String[] t = title.split(" ");
+                    StringBuffer sb = new StringBuffer();
+                    for(int k = 0; k < t.length; k++) {
+                        sb.append("+" + t[k] + "* ");
+                    }
+                    String str = sb.toString();
+                    statement.setString(i+1,str);
                 }
                 else if (paras.get(i).equals("year")){
                     statement.setString(i+1,year);

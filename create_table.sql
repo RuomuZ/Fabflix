@@ -1,9 +1,10 @@
 create table movies(
 id varchar(45) default '',
-title varchar(100) default '',
+title text,
 year int not null,
 director varchar (100) default '',
-primary key (id)
+primary key (id),
+fulltext (title)
 );
 
 
