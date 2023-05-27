@@ -13,23 +13,20 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import edu.uci.ics.fabflixmobile.data.NetworkManager;
 import edu.uci.ics.fabflixmobile.databinding.ActivityLoginBinding;
-import edu.uci.ics.fabflixmobile.ui.movielist.MovieListActivity;
+import edu.uci.ics.fabflixmobile.ui.search.search;
 import java.util.HashMap;
 import java.util.Map;
-
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 public class LoginActivity extends AppCompatActivity {
 
     private EditText username;
     private EditText password;
     private TextView message;
-
-    /*
-      In Android, localhost is the address of the device or the emulator.
-      To connect to your machine, you need to use the below IP address
-     */
     private final String host = "10.0.2.2";
     private final String port = "8080";
-    private final String domain = "cs122b_project2_login_cart_example_war";
+    private final String domain = "cs122b_project1_api_example_war";
     private final String baseURL = "http://" + host + ":" + port + "/" + domain;
 
     @Override
@@ -61,13 +58,22 @@ public class LoginActivity extends AppCompatActivity {
                 response -> {
                     // TODO: should parse the json response to redirect to appropriate functions
                     //  upon different response value.
-                    Log.d("login.success", response);
-                    //Complete and destroy login activity once successful
-                    finish();
-                    // initialize the activity(page)/destination
-                    Intent MovieListPage = new Intent(LoginActivity.this, MovieListActivity.class);
-                    // activate the list page.
-                    startActivity(MovieListPage);
+                    Gson g = new Gson();
+                    JsonParser parser = new JsonParser();
+                    JsonObject json = (JsonObject) parser.parse(response);
+                    if (json.get("status").toString().equals("\"success\"")){
+                        Log.d("login.success", response);
+                        //Complete and destroy login activity once successful
+                        finish();
+                        // initialize the activity(page)/destination
+                        Intent SearchPage = new Intent(LoginActivity.this, search.class);
+                        // activate the list page.
+                        startActivity(SearchPage);
+                    }
+                    else{
+                        message.setText(json.get("message").toString());
+                       Log.d("login.fail",response);
+                    }
                 },
                 error -> {
                     // error
