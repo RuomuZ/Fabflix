@@ -60,9 +60,18 @@ function handleResult(resultData) {
     // Find the empty table body by id "movie_table_body"
     let starTableBodyElement = jQuery("#star_table_body");
     let backElement = jQuery("#back");
-    let backHTML = '<a href=' + resultData[0]["back"] + '>'
-        + "Go Back" +
-        '</a>';
+    let backHTML;
+    console.log("back"+resultData[0]["back"])
+    if (""+resultData[0]["back"]==="null"){
+        backHTML = '<a href=' + "SearchMovie.html" + '>'
+            + "Go Back" +
+            '</a>';
+
+    }else {
+        backHTML = '<a href=' + resultData[0]["back"] + '>'
+            + "Go Back" +
+            '</a>';
+    }
     console.log("back appeneded");
     backElement.append(backHTML);
     // Concatenate the html tags with resultData jsonObject to create table rows
