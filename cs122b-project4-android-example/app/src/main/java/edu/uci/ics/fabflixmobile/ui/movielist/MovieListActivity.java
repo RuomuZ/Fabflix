@@ -21,7 +21,7 @@ import edu.uci.ics.fabflixmobile.data.model.Movie;
 import android.util.Log;
 import edu.uci.ics.fabflixmobile.ui.login.LoginActivity;
 import edu.uci.ics.fabflixmobile.ui.search.search;
-
+import edu.uci.ics.fabflixmobile.ui.single.singleMovie;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -35,6 +35,7 @@ public class MovieListActivity extends AppCompatActivity {
     private String offset;
     private String title;
     private TextView page;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,7 +50,6 @@ public class MovieListActivity extends AppCompatActivity {
         prevButton.setOnClickListener(view -> prev());
         final Button nextButton = findViewById(R.id.next);
         nextButton.setOnClickListener(view -> next());
-
         page = findViewById(R.id.page);
         page.setText(""+(Integer.parseInt(offset)/10 + 1));
         final StringRequest searchRequest = new StringRequest(
@@ -76,7 +76,9 @@ public class MovieListActivity extends AppCompatActivity {
                     listView.setAdapter(adapter);
                     listView.setOnItemClickListener((parent, view, position, id) -> {
                         Movie movie = movies.get(position);
-
+                        Intent singleMoviePage = new Intent(MovieListActivity.this, singleMovie.class);
+                        singleMoviePage.putExtra("title", movie.getName());
+                        startActivity(singleMoviePage);
                     });
                 },
                 error -> {
