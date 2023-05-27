@@ -32,17 +32,16 @@ public class search  extends AppCompatActivity {
         setContentView(R.layout.activity_search);
 
         title = findViewById(R.id.title);
-        final Button loginButton = findViewById(R.id.search);
-
-        //assign a listener to call a function to handle the user request when clicking a button
-        loginButton.setOnClickListener(view -> search());
+        final Button searchButton = findViewById(R.id.search);
+        searchButton.setOnClickListener(view -> search());
     }
 
     @SuppressLint("SetTextI18n")
     public void search() {
-        finish();
+        //finish();
         Intent MovieListPage = new Intent(search.this, MovieListActivity.class);
         MovieListPage.putExtra("title",title.getText().toString());
+        MovieListPage.putExtra("offset","0");
         startActivity(MovieListPage);
     }
 }

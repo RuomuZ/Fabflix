@@ -2,7 +2,9 @@ package edu.uci.ics.fabflixmobile.ui.movielist;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,18 +32,29 @@ public class MovieListActivity extends AppCompatActivity {
     private final String domain = "cs122b_project1_api_example_war";
     private final String baseURL = "http://" + host + ":" + port + "/" + domain;
     private int total;
+    private String offset;
+    private String title;
+    private TextView page;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movielist);
         final ArrayList<Movie> movies = new ArrayList<>();
         Bundle b = getIntent().getExtras();
-        String title = b.getString("title");
+        title = b.getString("title");
+        offset = b.getString("offset");
         final RequestQueue queue = NetworkManager.sharedManager(this).queue;
-        // request type is POST
+
+        final Button prevButton = findViewById(R.id.prev);
+        prevButton.setOnClickListener(view -> prev());
+        final Button nextButton = findViewById(R.id.next);
+        nextButton.setOnClickListener(view -> next());
+
+        page = findViewById(R.id.page);
+        page.setText(""+(Integer.parseInt(offset)/10 + 1));
         final StringRequest searchRequest = new StringRequest(
                 Request.Method.GET,
-                baseURL + "/api/BrowseMovie.html?title="+title+"&year=&director=&star=&load_size=10&sorted=tara&offset=0",
+                baseURL + "/api/BrowseMovie.html?title="+title+"&year=&director=&star=&load_size=10&sorted=tara&offset="+offset,
                 response -> {
                     Log.d("response",response);
                     JsonParser parser = new JsonParser();
@@ -63,8 +76,7 @@ public class MovieListActivity extends AppCompatActivity {
                     listView.setAdapter(adapter);
                     listView.setOnItemClickListener((parent, view, position, id) -> {
                         Movie movie = movies.get(position);
-                        @SuppressLint("DefaultLocale") String message = String.format("Clicked on position: %d, name: %s, %d", position, movie.getName(), movie.getYear());
-                        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+
                     });
                 },
                 error -> {
@@ -74,5 +86,38 @@ public class MovieListActivity extends AppCompatActivity {
         };
         queue.add(searchRequest);
     }
+    @SuppressLint("SetTextI18n")
+    public void prev() {
+
+        if (Integer.parseInt(offset) == 0){
+            Toast.makeText(getApplicationContext(), "already at page 1", Toast.LENGTH_SHORT).show();
+        } else {
+            finish();
+            Intent MovieListPage = new Intent(MovieListActivity.this, MovieListActivity.class);
+            MovieListPage.putExtra("title", title);
+            MovieListPage.putExtra("offset", "" + (Integer.parseInt(offset) - 10));
+            startActivity(MovieListPage);
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    public void next() {
+
+        if (Integer.parseInt(offset) + 10 >= total){
+            Toast.makeText(getApplicationContext(), "already at the last page", Toast.LENGTH_SHORT).show();
+        }else {
+            finish();
+            Intent MovieListPage = new Intent(MovieListActivity.this, MovieListActivity.class);
+            MovieListPage.putExtra("title", title);
+            MovieListPage.putExtra("offset", "" + (Integer.parseInt(offset) + 10));
+            startActivity(MovieListPage);
+        }
+    }
+    @Override
+    public void onBackPressed()
+    {
+        super.onBackPressed();
+    }
+
 
 }

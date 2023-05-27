@@ -41,8 +41,6 @@ public class LoginActivity extends AppCompatActivity {
         password = binding.password;
         message = binding.message;
         final Button loginButton = binding.login;
-
-        //assign a listener to call a function to handle the user request when clicking a button
         loginButton.setOnClickListener(view -> login());
     }
 
