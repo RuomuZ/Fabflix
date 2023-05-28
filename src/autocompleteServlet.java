@@ -54,7 +54,8 @@ public class autocompleteServlet extends HttpServlet {
         String tt = request.getParameter("query");
 
         try (Connection conn = dataSource.getConnection()) {
-            String query = "select * from movies where match(title) against (? IN BOOLEAN MODE) limit 10;";
+            String query = "select * from movies where (match(title) against (? IN BOOLEAN MODE) " +
+                    "or edth(?, title, ?)) limit 10;";
             PreparedStatement statement = conn.prepareStatement(query);
             String[] t = tt.split(" ");
             StringBuffer sb = new StringBuffer();
@@ -64,6 +65,8 @@ public class autocompleteServlet extends HttpServlet {
             String str = sb.toString();
             System.out.println(str);
             statement.setString(1,str);
+            statement.setString(2,tt);
+            statement.setInt(3,tt.length()/3);
             ResultSet rs = statement.executeQuery();
             JsonArray jsonArray = new JsonArray();
             while (rs.next()) {

@@ -169,7 +169,7 @@ public class BrowseMovie extends HttpServlet {
                         statement.setString(i+1,title);
                     }
                     else if (paras.get(i).equals("norm_fuzzy")){
-                        statement.setInt(i+1,title.length()/2);
+                        statement.setInt(i+1,title.length()/3);
                     }
                     else if (paras.get(i).equals("year")){
                         statement.setString(i+1,year);
@@ -245,7 +245,7 @@ public class BrowseMovie extends HttpServlet {
                     statement.setString(i+1,title);
                 }
                 else if (paras.get(i).equals("norm_fuzzy")){
-                    statement.setInt(i+1,title.length()/2);
+                    statement.setInt(i+1,title.length()/3);
                 }
                 else if (paras.get(i).equals("year")){
                     statement.setString(i+1,year);
