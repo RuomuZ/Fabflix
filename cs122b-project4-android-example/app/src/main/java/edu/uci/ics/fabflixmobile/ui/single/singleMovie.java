@@ -23,10 +23,10 @@ public class singleMovie extends AppCompatActivity {
     TextView rating;
     TextView genres;
     TextView stars;
-    private final String host = "10.0.2.2";
-    private final String port = "8080";
-    private final String domain = "cs122b_project1_api_example_war";
-    private final String baseURL = "http://" + host + ":" + port + "/" + domain;
+    private final String host = "ec2-3-139-236-103.us-east-2.compute.amazonaws.com";
+    private final String port = "8443";
+    private final String domain = "cs122b-project1-api-example";
+    private final String baseURL = "https://" + host + ":" + port + "/" + domain;
     //api/single-movie?title=" + movieTitle
     @Override
     protected void onCreate(Bundle savedInstanceState) {
