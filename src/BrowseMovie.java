@@ -72,9 +72,14 @@ public class BrowseMovie extends HttpServlet {
             query += "where ";
             if(title != null&& !title.equals("")) {
 
-                query += "match(title) against (? IN BOOLEAN MODE)";
+                query += "(match(title) against (? IN BOOLEAN MODE)";
+                //for fuzzy search
+                query += " or edth(?, title, ?))";
+                //
                 flag = 1;
                 paras.add("title");
+                paras.add("fuzzy");
+                paras.add("norm_fuzzy");
             }
             if(year != null&& !year.equals("")) {
                 if (flag == 0){
@@ -160,6 +165,12 @@ public class BrowseMovie extends HttpServlet {
                         System.out.println(str);
                         statement.setString(i+1,str);
                     }
+                    else if (paras.get(i).equals("fuzzy")){
+                        statement.setString(i+1,title);
+                    }
+                    else if (paras.get(i).equals("norm_fuzzy")){
+                        statement.setInt(i+1,title.length()/2);
+                    }
                     else if (paras.get(i).equals("year")){
                         statement.setString(i+1,year);
                     }
@@ -229,6 +240,12 @@ public class BrowseMovie extends HttpServlet {
                     }
                     String str = sb.toString();
                     statement.setString(i+1,str);
+                }
+                else if (paras.get(i).equals("fuzzy")){
+                    statement.setString(i+1,title);
+                }
+                else if (paras.get(i).equals("norm_fuzzy")){
+                    statement.setInt(i+1,title.length()/2);
                 }
                 else if (paras.get(i).equals("year")){
                     statement.setString(i+1,year);
