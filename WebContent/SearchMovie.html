@@ -8,14 +8,16 @@
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
         integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+  <link rel="stylesheet" href="autocomplete.css">
     <title>Search Movie</title>
 </head>
 <body>
 <h2>Search Movies</h2>
-<form id="search_form" method="get" action=BrowseMovie.html>
+<form id="search_form" method="get" autocomplete="off" action=BrowseMovie.html>
   <label><b>Title</b></label>
   <label>
-    <input name="title" placeholder="" type="text">
+    <input name="title" placeholder="" id="autocomplete" type="text">
   </label>
   <label><b>Year</b></label>
   <label>
@@ -54,6 +56,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.devbridge-autocomplete/1.4.11/jquery.autocomplete.min.js"></script>
 
 <script src="SearchMovie.js"></script>
 </body>
