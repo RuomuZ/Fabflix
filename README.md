@@ -8,4 +8,6 @@ website url: https://ec2-3-139-236-103.us-east-2.compute.amazonaws.com:8443/cs12
 
 I implement the fuzzy search. The edit distance should be less than title.length()/3.
 
+The Android App works fine on both Pixel 2 XL API 30 and Pixel XL API 33.
+
 
