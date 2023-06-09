@@ -1,13 +1,44 @@
-#Moviedb project4
+- # General
+    - #### Team#:
+    
+    - #### Names:
+    
+    - #### Project 5 Video Demo Link:
 
-Group fish
-Member: Ruomu Zhao
+    - #### Instruction of deployment:
 
-url to the video: https://drive.google.com/file/d/1aBnHdiczADSsYjUg6qdX1eL4eZSCMV8_/view?usp=sharing
-website url: https://ec2-3-139-236-103.us-east-2.compute.amazonaws.com:8443/cs122b-project1-api-example/login.html
-
-I implement the fuzzy search. The edit distance should be less than title.length()/3.
-
-The Android App works fine on both Pixel 2 XL API 30 and Pixel XL API 33.
+    - #### Collaborations and Work Distribution:
 
 
+- # Connection Pooling
+    - #### Include the filename/path of all code/configuration files in GitHub of using JDBC Connection Pooling.
+    
+    - #### Explain how Connection Pooling is utilized in the Fabflix code.
+    
+    - #### Explain how Connection Pooling works with two backend SQL.
+    
+
+- # Master/Slave
+    - #### Include the filename/path of all code/configuration files in GitHub of routing queries to Master/Slave SQL.
+
+    - #### How read/write requests were routed to Master/Slave SQL?
+    
+
+- # JMeter TS/TJ Time Logs
+    - #### Instructions of how to use the `log_processing.*` script to process the JMeter logs.
+
+
+- # JMeter TS/TJ Time Measurement Report
+
+| **Single-instance Version Test Plan**          | **Graph Results Screenshot** | **Average Query Time(ms)** | **Average Search Servlet Time(ms)** | **Average JDBC Time(ms)** | **Analysis** |
+|------------------------------------------------|------------------------------|----------------------------|-------------------------------------|---------------------------|--------------|
+| Case 1: HTTP/1 thread                          | ![](path to image in img/)   | ??                         | ??                                  | ??                        | ??           |
+| Case 2: HTTP/10 threads                        | ![](path to image in img/)   | ??                         | ??                                  | ??                        | ??           |
+| Case 3: HTTPS/10 threads                       | ![](path to image in img/)   | ??                         | ??                                  | ??                        | ??           |
+| Case 4: HTTP/10 threads/No connection pooling  | ![](path to image in img/)   | ??                         | ??                                  | ??                        | ??           |
+
+| **Scaled Version Test Plan**                   | **Graph Results Screenshot** | **Average Query Time(ms)** | **Average Search Servlet Time(ms)** | **Average JDBC Time(ms)** | **Analysis** |
+|------------------------------------------------|------------------------------|----------------------------|-------------------------------------|---------------------------|--------------|
+| Case 1: HTTP/1 thread                          | ![](path to image in img/)   | ??                         | ??                                  | ??                        | ??           |
+| Case 2: HTTP/10 threads                        | ![](path to image in img/)   | ??                         | ??                                  | ??                        | ??           |
+| Case 3: HTTP/10 threads/No connection pooling  | ![](path to image in img/)   | ??                         | ??                                  | ??                        | ??           |

@@ -59,7 +59,8 @@ public class addMovieServlet extends HttpServlet {
                 responseJsonObject.addProperty("status", "fail");
                 responseJsonObject.addProperty("message", "fail somehow");
             }
-
+            rs.close();
+            statement.close();
             response.getWriter().write(responseJsonObject.toString());
         } catch (Exception e) {
             JsonObject jsonObject = new JsonObject();

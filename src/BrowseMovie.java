@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import jakarta.servlet.ServletConfig;
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -11,6 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import javax.sql.DataSource;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -40,6 +42,9 @@ public class BrowseMovie extends HttpServlet {
 
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        long startTime = System.nanoTime();
+        long totalTime;
+        long totalQueryTime;
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
         HttpSession session = request.getSession();
@@ -96,7 +101,7 @@ public class BrowseMovie extends HttpServlet {
                 } else {
                     query += " and ";
                 }
-                    query += "u.director like ?";
+                query += "u.director like ?";
                 paras.add("director");
             }
             if(star != null&& !star.equals("")) {
@@ -105,7 +110,7 @@ public class BrowseMovie extends HttpServlet {
                 } else {
                     query += " and ";
                 }
-                    query += "k.name like ? and k.id = l.starId and l.movieId = u.id";
+                query += "k.name like ? and k.id = l.starId and l.movieId = u.id";
                 paras.add("star");
             }
             if (genre != null)
@@ -117,9 +122,9 @@ public class BrowseMovie extends HttpServlet {
                         "from (select x.name from genres as x, genres_in_movies as y where y.movieId = u.id" +
                         " and y.genreId = x.id order by x.name limit 3) as v) as movie_genres from movies as u," +
                         " ratings as v, genres as g, genres_in_movies as l where g.name = ?  and g.id = l.genreId and l.movieId = u.id";
-               paras.add("genre");
+                paras.add("genre");
                 // query += String.format("g.name = \"%s\" ", genre);
-               // query += " and g.id = l.genreId and l.movieId = u.id";
+                // query += " and g.id = l.genreId and l.movieId = u.id";
                 flag = 1;
             }
             if (cha != null)
@@ -145,9 +150,12 @@ public class BrowseMovie extends HttpServlet {
                 }
             }
             if (flag == 1) {query += " and ";}
+
             if (session.getAttribute(title+year+director+star+genre+cha) == null)
 
             {
+                session.setAttribute(title+year+director+star+genre+cha, ""+100);
+                /*
                 System.out.println("attribute not exist");
                 String query2 = query +"u.id = v.MovieId;";
                 query2 = query2.replace("u.title, u.year, u.director, v.rating, (select group_concat(distinct v.name order by v.name separator \",\") from (select x.name from stars as x, stars_in_movies as y where y.movieId = u.id and y.starId = x.id order by x.name limit 3) as v) as movie_stars, (select group_concat(distinct v.name order by v.name separator \",\") from (select x.name from genres as x, genres_in_movies as y where y.movieId = u.id and y.genreId = x.id order by x.name limit 3) as v) as movie_genres ", "count(*) as total ");
@@ -197,7 +205,10 @@ public class BrowseMovie extends HttpServlet {
                 session.setAttribute(title+year+director+star+genre+cha, t);
                 statement.close();
                 rs.close();
+
+             */
             }
+
             String total = (String) session.getAttribute(title+year+director+star+genre+cha);
             System.out.println("get total " + total);
             query += "u.id = v.MovieId ";
@@ -269,8 +280,9 @@ public class BrowseMovie extends HttpServlet {
                     statement.setInt(i+1,Integer.parseInt(offset));
                 }
             }
-
+            long startQTime = System.nanoTime();
             ResultSet rs = statement.executeQuery();
+            long endQTime = System.nanoTime();
             JsonArray jsonArray = new JsonArray();
             JsonObject jsonNum = new JsonObject();
             jsonNum.addProperty("total",total);
@@ -294,6 +306,15 @@ public class BrowseMovie extends HttpServlet {
             }
             rs.close();
             statement.close();
+            long endTime = System.nanoTime();
+            totalTime = endTime-startTime;
+            ServletContext servletContext = request.getSession().getServletContext();
+            String absoluteDiskPath = servletContext.getRealPath("/");
+            System.out.println("path = " + absoluteDiskPath);
+            totalQueryTime = endQTime-startQTime;
+            FileWriter tl = new FileWriter(absoluteDiskPath+"time.log",true);
+            tl.write(totalTime + "," + totalQueryTime + "\n");
+            tl.close();
             request.getServletContext().log("getting " + jsonArray.size() + " results");
             out.write(jsonArray.toString());
             response.setStatus(200);

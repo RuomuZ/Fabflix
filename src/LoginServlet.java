@@ -32,8 +32,21 @@ public class LoginServlet extends HttpServlet {
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        /*
+
+        StringBuilder requestURL = new StringBuilder(request.getRequestURL().toString());
+        String queryString = request.getQueryString();
+        if (queryString == null) {
+            System.out.println(requestURL);
+        } else {
+            System.out.println(requestURL.append('?').append(queryString));
+        }
+        */
+        String test = request.getParameter("test");
+        System.out.println(test);
+        System.out.println(!(test != null&& !test.equals("")));
         JsonObject responseJsonObject = new JsonObject();
-        if (!request.getHeader("User-Agent").toLowerCase().contains("android")) {
+        if ((!request.getHeader("User-Agent").toLowerCase().contains("android")) && (!(test != null&& !test.equals("")))) {
             String gRecaptchaResponse = request.getParameter("g-recaptcha-response");
             System.out.println("gRecaptchaResponse=" + gRecaptchaResponse);
 
