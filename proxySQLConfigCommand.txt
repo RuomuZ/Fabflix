@@ -1,0 +1,28 @@
+sudo dpkg -i proxysql_2.5.2-ubuntu22_amd64.deb
+sudo service proxysql start
+service proxysql status
+sudo  mysql -h127.0.0.1 -uadmin -padmin -P6032
+insert into mysql_servers(hostgroup_id,hostname,status,max_connections) values(10,'172.31.13.20','ONLINE',100);
+insert into mysql_servers(hostgroup_id,hostname,status,max_connections) values(20,'172.31.5.110','ONLINE',100);
+insert into mysql_replication_hostgroups(writer_hostgroup,reader_hostgroup,check_type) values(10, 20, 'read_only');
+load mysql servers to runtime;
+save mysql servers to disk;
+pager grep -i 'username\|password'
+show varibales;
+set mysql-monitor_password='MySQL@321';
+set mysql-monitor_username='proxy_mon';
+load mysql variables to runtime;
+save mysql variables to disk;
+nopager
+select * from runtime_mysql_servers\G
+insert into mysql_users (username,password,active,default_hostgroup,max_connections) values ('mytestuser','My6$Password',1,10,100);
+load mysql users to runtime;
+save mysql users to disk;
+insert into mysql_query_rules (rule_id,active,match_pattern,destination_hostgroup,apply) values (1,1,'^select .*',20,1);
+insert into mysql_query_rules (rule_id,active,match_pattern,destination_hostgroup,apply) values (2,1,'^call .*',10,1);
+insert into mysql_query_rules (rule_id,active,match_pattern,destination_hostgroup,apply) values (3,1,'^insert .*',10,1);
+insert into mysql_query_rules (rule_id,active,match_pattern,destination_hostgroup,apply) values (4,1,'^create .*',10,1);
+load mysql query rules to runtime;
+save mysql query rules to disk;
+update global_variables set variable_value="8.0.4 (ProxySQL)" where variable_name='mysql-server_version';
+
