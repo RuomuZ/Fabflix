@@ -14,7 +14,7 @@
     - #### Include the filename/path of all code/configuration files in GitHub of using JDBC Connection Pooling.
     WebContent/META_INF/context.xml
     - #### Explain how Connection Pooling is utilized in the Fabflix code.
-    In my servlet, I first get the data source that is defined in my context.xml. Then I get a connect from the pool of connections in the datasource. I do not need to close the connection in my code. Also, I set the cachePrepStmts to be true.
+    In my servlet, I first get the data source that is defined in my context.xml. Then I get a connection from the pool of connections in the datasource. I do not need to close the connection in my code. Also, I set the cachePrepStmts to be true.
     - #### Explain how Connection Pooling works with two backend SQL.
     I use a router to route the queries. So the connection pool is a pool of connections to my router. The router does the read/write splitting and load balancing job.
 
