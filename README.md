@@ -5,7 +5,7 @@
     
     - #### Project 5 Video Demo Link:
 
-    - #### Instruction of deployment:  If it is for single_instance, the port in the url of the WebContent/META_INF/context.xml should be 3306. Else, if it is for scaled_instance, change the port number to 6033 for the proxySQL routers. In server instance 2, instance 3, git clone the repo and change the port. Call mvn clean package to get the war file to deploy. For the 122b-ruomuz-project server, leave the port number to 3306. Call mvn clean package to deploy.
+    - #### Instruction of deployment:  If it is for single_instance, the port in the url of the WebContent/META_INF/context.xml should be 3306. Else, if it is for scaled_instance, change the port number to 6033 for the proxySQL routers. Also, delete the security constrain part in the WebContent/WEB_INF/web.xml to disallow https redirecting for scaled-version. In server instance 2, instance 3, git clone the repo and change the port. Call mvn clean package to get the war file to deploy. For the 122b-ruomuz-project server, leave the port number to 3306. Call mvn clean package to deploy.
 
     - #### Collaborations and Work Distribution: Me
 
