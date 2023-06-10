@@ -40,5 +40,5 @@
 | **Scaled Version Test Plan**                   | **Graph Results Screenshot** | **Average Query Time(ms)** | **Average Search Servlet Time(ms)** | **Average JDBC Time(ms)** | **Analysis** |
 |------------------------------------------------|------------------------------|----------------------------|-------------------------------------|---------------------------|--------------|
 | Case 1: HTTP/1 thread                          | ![](screen/scaled_instance_http_1.png)   | 206                         | 32                                  | 31                        | ??           |
-| Case 2: HTTP/10 threads                        | ![](screen/scaled_instance_http_10.png)   | 259                         | 90.9                                  | 90                        | 90.4           |
-| Case 3: HTTP/10 threads/No connection pooling  | ![](screen/scaled_instance_http_no_CP_10.png)   | 253                         | 88                                 | 87                        | ??           |
+| Case 2: HTTP/10 threads                        | ![](screen/scaled_instance_http_no_CP_10.png)   | 259                         | 90.9                                  | 90                        | 90.4           |
+| Case 3: HTTP/10 threads/No connection pooling  | ![](screen/scaled_instance_http_10.png)   | 253                         | 88                                 | 87                        | ??           |
