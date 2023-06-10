@@ -27,19 +27,20 @@ proxySQLConfigCommand.txt under the root directory. This file include all the co
 
 - # JMeter TS/TJ Time Logs
     - #### Instructions of how to use the `log_processing.*` script to process the JMeter logs.
- - Putting the log_processing.py and the logs in the same folder. Call ./log_processing.py <filename>.log
+  First, the log_processing.py is under the logs/ directory.
+  Putting the log_processing.py and the logs in the same folder. Call ./log_processing.py <filename>.log
 
 - # JMeter TS/TJ Time Measurement Report
 
 | **Single-instance Version Test Plan**          | **Graph Results Screenshot** | **Average Query Time(ms)** | **Average Search Servlet Time(ms)** | **Average JDBC Time(ms)** | **Analysis** |
 |------------------------------------------------|------------------------------|----------------------------|-------------------------------------|---------------------------|--------------|
-| Case 1: HTTP/1 thread                          | ![](screen/single_instance_http_1.png)   | 204                         | 189.5                                  | 189.1                        | It takes 189.1ms to run the jdbc part. It takes 204 ms in total to finish the query.           |
-| Case 2: HTTP/10 threads                        | ![](screen/single_instance_http_10.png)   | 435                         | 215.7                                  | 215.4                        | The average servlet time and jdbc time are higher than 1 thread.             |
-| Case 3: HTTPS/10 threads                       | ![](screen/single_instance_https_10.png)   | 509                         | 245.4                                  | 244.3                        | The average query time is much higher than the http version. The encription process may be the cause.           |
-| Case 4: HTTP/10 threads/No connection pooling  | ![](screen/single_instance_http_no_CP_10.png)   | 360                         | 191                                  | 177                        | The difference between TS and TJ is larger because of lack of connection pooling.           |
+| Case 1: HTTP/1 thread                          | ![](img/single_instance_http_1.png)   | 204                         | 189.5                                  | 189.1                        | It takes 189.1ms to run the jdbc part. It takes 204 ms in total to finish the query.           |
+| Case 2: HTTP/10 threads                        | ![](img/single_instance_http_10.png)   | 435                         | 215.7                                  | 215.4                        | The average servlet time and jdbc time are higher than 1 thread.             |
+| Case 3: HTTPS/10 threads                       | ![](img/single_instance_https_10.png)   | 509                         | 245.4                                  | 244.3                        | The average query time is much higher than the http version. The encription process may be the cause.           |
+| Case 4: HTTP/10 threads/No connection pooling  | ![](img/single_instance_http_no_CP_10.png)   | 360                         | 191                                  | 177                        | The difference between TS and TJ is larger because of lack of connection pooling.           |
 
 | **Scaled Version Test Plan**                   | **Graph Results Screenshot** | **Average Query Time(ms)** | **Average Search Servlet Time(ms)** | **Average JDBC Time(ms)** | **Analysis** |
 |------------------------------------------------|------------------------------|----------------------------|-------------------------------------|---------------------------|--------------|
-| Case 1: HTTP/1 thread                          | ![](screen/scaled_instance_http_1.png)   | 206                         | 32                                  | 31                        | In query is completed a lot more faster than unscaled version, because there are two mysql database that can handle the readings           |
-| Case 2: HTTP/10 threads                        | ![](screen/scaled_instance_http_no_CP_10.png)   | 259                         | 90.9                                  | 90.4                        |     Compared to 1 thread is slower. But still, the scaled version is faster than the single version.       |
-| Case 3: HTTP/10 threads/No connection pooling  | ![](screen/scaled_instance_http_10.png)   | 253                         | 95                                 | 87                        |    The difference between TS and TJ is larger because of lack of connection pooling.        |
+| Case 1: HTTP/1 thread                          | ![](img/scaled_instance_http_1.png)   | 206                         | 32                                  | 31                        | In query is completed a lot more faster than unscaled version, because there are two mysql database that can handle the readings           |
+| Case 2: HTTP/10 threads                        | ![](img/scaled_instance_http_no_CP_10.png)   | 259                         | 90.9                                  | 90.4                        |     Compared to 1 thread is slower. But still, the scaled version is faster than the single version.       |
+| Case 3: HTTP/10 threads/No connection pooling  | ![](img/scaled_instance_http_10.png)   | 253                         | 95                                 | 87                        |    The difference between TS and TJ is larger because of lack of connection pooling.        |
