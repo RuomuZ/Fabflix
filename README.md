@@ -20,10 +20,11 @@
 
 - # Master/Slave
     - #### Include the filename/path of all code/configuration files in GitHub of routing queries to Master/Slave SQL.
-proxySQLConfigCommand.txt under the root directory. This file include all the commands I need to install and configure the proxySQL as a query router and a load balancer.
+proxySQLConfigCommand.txt under the root directory. This file include all the commands I need to install and configure the proxySQL as a query router and a load balancer. Note that when insert monitor and user into the proxySQL, the mysql database need to have a corresponding users. The proxySQL open 6032 for admin, and 6033 for ouside connections.
     - #### How read/write requests were routed to Master/Slave SQL?
-    I configured proxySQL as a query router for both of my master and slave server. The proxySQL check the read_only variable regularly to see if a server is writable or not. The proxySQL will based on several regular expression query rules that I defined. For example, if a query is like "^insert.*", it will be redirect to only master server. I only need to modified the port of the url in the context.xml file from 3306 to 6033. Also, the proxySQL does the load balancer job as well.
+    I configured proxySQL as query routers for both of my master and slave server. There are proxySQL services on both master and slave instance. The proxySQL check the read_only variable regularly to see if a server is writable or not. The proxySQL will based on several regular expression query rules that I defined. For example, if a query is like "^insert.*", it will be redirect to only master server. I only need to modified the port of the url in the context.xml file from 3306 to 6033. Also, the proxySQL does the load balancer job as well.
 
+IMPORTANT: In order to bypass the reCaptcha, I pass a parameter test=x in my JMeter login task.
 
 - # JMeter TS/TJ Time Logs
     - #### Instructions of how to use the `log_processing.*` script to process the JMeter logs.
